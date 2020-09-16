@@ -5,30 +5,30 @@ import * as utilPath from "path";
 import { NodeUtilsHashing, NodeUtilsFiles } from "@malkab/node-utils";
 
 /**
- * 
+ *
  * This class handles a Multer middleware.
- * 
+ *
  */
 export class Multer{
 
   /**
-   * 
+   *
    * Storage path.
-   * 
+   *
    */
   private _storagePath: string;
 
   /**
-   * 
+   *
    * Multer.
-   * 
+   *
    */
   private _multer: any;
 
-  /** 
-   * 
+  /**
+   *
    * Multer
-   * 
+   *
    */
   get multer(): any {
 
@@ -37,9 +37,9 @@ export class Multer{
   }
 
   /**
-   * 
+   *
    * Constructor.
-   * 
+   *
    */
   constructor(storagePath: string, originalName: boolean = false) {
 
@@ -57,33 +57,29 @@ export class Multer{
     }
 
     // Create a Multer
-    this._multer = multer({
-      
-      storage: multer.diskStorage({
+    this._multer = multer.diskStorage({
 
-        destination: (req: any, file: any, cb: any) => {
-  
-          cb(null, this._storagePath);
-      
-        },
-      
-        filename: (req: any, file: any, cb: any) => {
+      destination: (req: any, file: any, cb: any) => {
 
-          if (originalName === false) {
+        cb(null, this._storagePath);
 
-            const fileData = utilPath.parse(file.originalname);
+      },
 
-            cb(null, `${NodeUtilsHashing.genUid()}${fileData.ext}`);
+      filename: (req: any, file: any, cb: any) => {
 
-          } else {
+        if (originalName === false) {
 
-            cb(null, file.originalname);
+          const fileData = utilPath.parse(file.originalname);
 
-          }
-      
+          cb(null, `${NodeUtilsHashing.genUid()}${fileData.ext}`);
+
+        } else {
+
+          cb(null, file.originalname);
+
         }
 
-      })
+      }
 
     })
 

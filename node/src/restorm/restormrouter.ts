@@ -109,13 +109,13 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     ],
     badRequestErrorPayload = ({
         /** The error producing the response. */
-        error = null,
+        error,
         /** The object, if any has been able to be generated. */
-        object = null,
+        object,
         /** The Express request. */
-        request = null,
+        request,
         /** The Express response. */
-        response = null
+        response
       }: {
         error?: any;
         object?: T;
@@ -124,13 +124,13 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     } = {}) => request.body,
     duplicatedErrorPayload = ({
         /** The error producing the response. */
-        error = null,
+        error,
         /** The object, if any has been able to be generated. */
-        object = null,
+        object,
         /** The Express request. */
-        request = null,
+        request,
         /** The Express response. */
-        response = null
+        response
       }: {
         error?: any;
         object?: T;
@@ -152,28 +152,14 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
         request?: Request;
         response?: Response;
     } = {}) => request.body,
-    notFoundErrorPayload = ({
-        /** The error producing the response. */
-        error,
-        /** The object, if any has been able to be generated. */
-        object,
-        /** The Express request. */
-        request,
-        /** The Express response. */
-        response
-      }: {
-        error?: any;
-        object?: T;
-        request?: Request;
-        response?: Response;
-    } = {}) => request.body,
+    notFoundErrorPayload = ({ error: e, request: req, response: res }) => req.body,
     postIResponsePayload = ({
         /** The generated object.  */
-        object = null,
+        object = undefined,
         /** The Express request. */
-        request = null,
+        request = undefined,
         /** The Express response. */
-        response = null
+        response = undefined
       }: {
         object?: T;
         request?: Request;
@@ -181,11 +167,11 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     } = {}) => <IResponsePayload>{ payload: object },
     getIResponsePayload = ({
         /** The generated object.  */
-        object = null,
+        object = undefined,
         /** The Express request. */
-        request = null,
+        request = undefined,
         /** The Express response. */
-        response = null
+        response = undefined
       }: {
         object?: T;
         request?: Request;
@@ -193,11 +179,11 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     } = {}) => <IResponsePayload>{ payload: object },
     patchIResponsePayload = ({
         /** The generated object.  */
-        object = null,
+        object = undefined,
         /** The Express request. */
-        request = null,
+        request = undefined,
         /** The Express response. */
-        response = null
+        response = undefined
       }: {
         object?: T;
         request?: Request;
@@ -205,11 +191,11 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     } = {}) => <IResponsePayload>{ payload: object },
     deleteIResponsePayload = ({
         /** The generated object.  */
-        object = null,
+        object = undefined,
         /** The Express request. */
-        request = null,
+        request = undefined,
         /** The Express response. */
-        response = null
+        response = undefined
       }: {
         object?: T;
         request?: Request;
@@ -301,8 +287,8 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
       response
     }: {
       error?: any;
-      request?: Request;
-      response?: Response;
+      request: Request;
+      response: Response;
     }) => any;
     /** The payload for successfull responses to POST requests. */
     postIResponsePayload?: ({
@@ -347,7 +333,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
 }): void {
 
   // Check for keyless POST method parameters
-  const postUrlParameters: string[] = keylessPostMethod ? [ null ] : keysUrlParameters;
+  const postUrlParameters: string[] = keylessPostMethod ? [] : keysUrlParameters;
 
   /**
    *
@@ -360,7 +346,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     (request: Request, response: Response, next: any) => {
 
       // The created object from the request.body
-      let object: T = null;
+      let object: T;
 
       try {
 
@@ -374,7 +360,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           error: e,
           httpStatus: StatusCodes.BAD_REQUEST,
           payload: badRequestErrorPayload(
-            { error: e, object: object, request: request, response: response })
+            { error: e, request: request, response: response })
         });
 
       }
@@ -459,7 +445,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
               error: e,
               httpStatus: StatusCodes.BAD_REQUEST,
               payload: badRequestErrorPayload(
-                { error: e, object: null, request: request, response: response })
+                { error: e, request: request, response: response })
             });
 
           }
@@ -481,7 +467,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
             error: e,
             httpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
             payload: internalErrorPayload(
-              { error: e, object: null, request: request, response: response })
+              { error: e, request: request, response: response })
           });
 
         }),
@@ -513,7 +499,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     (request: Request, response: Response, next: any) => {
 
       // The created object from the request.body
-      let object: T = null;
+      let object: T;
 
       // Process pipeline: check if the object exists
       response.appianObservable = getMethod$(request.params)
@@ -561,7 +547,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
             error: e,
             httpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
             payload: internalErrorPayload(
-              { error: e, object: null, request: request, response: response })
+              { error: e, object: undefined, request: request, response: response })
           });
 
         }),
@@ -593,7 +579,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     (request: Request, response: Response, next: any) => {
 
       // The created object from the request.body
-      let object: T = null;
+      let object: T = undefined;
 
       // Process pipeline: get the object
       response.appianObservable = getMethod$(request.params)
