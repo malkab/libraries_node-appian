@@ -31,7 +31,8 @@ Steps:
 - push all branches and tags to GitLab:
 
 ```Shell
-# This will push ALL branches to origin, even the non-existant ones. Remove sporious branches with git push origin :branch_name
+# This will push ALL branches to origin, even the non-existant ones.
+# Remove spurious branches with git push origin :branch_name
 git push --all origin
 git push --tags
 git fetch -av --prune
