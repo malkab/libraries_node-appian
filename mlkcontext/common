@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# ---------------------------
+#
+# Common settings for all contexts.
+#
+# ---------------------------
+#
+# Prefix variables with MLKC_.
+#
+# ---------------------------
+
+export MLKC_APP_NAME=appian
+export MLKC_POSTGIS_IMAGE=gargantuan_giraffe

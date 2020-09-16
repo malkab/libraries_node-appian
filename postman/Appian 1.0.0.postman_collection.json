@@ -1,0 +1,364 @@
+{
+	"info": {
+		"_postman_id": "672bce02-7172-4bc1-a368-600751a2ab6d",
+		"name": "Appian 1.0.0",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/route/test",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/route/test",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"route",
+						"test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/route/testnotautomatic",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/route/testnotautomatic",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"route",
+						"testnotautomatic"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/route/testerror",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/route/testerror",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"route",
+						"testerror"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/route/testerrornotautomatic",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/route/testerrornotautomatic",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"route",
+						"testerrornotautomatic"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/route/postimage",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/home/malkab/Desktop/File 18-08-2020, 05 08 52.jpeg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/route/postimage",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"route",
+						"postimage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/route/postimagememory",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/home/malkab/Desktop/maxresdefault.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/route/postimagememory",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"route",
+						"postimagememory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/route/postimage/:name",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/home/malkab/Desktop/maxresdefault.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/route/postimage/:name",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"route",
+						"postimage",
+						":name"
+					],
+					"variable": [
+						{
+							"key": "name",
+							"value": "newname"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/route/observable/success/:key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/route/observable/success/:key",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"route",
+						"observable",
+						"success",
+						":key"
+					],
+					"variable": [
+						{
+							"key": "key",
+							"value": "theKey"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/route/observable/unexpected/:key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/route/observable/unexpected/:key",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"route",
+						"observable",
+						"unexpected",
+						":key"
+					],
+					"variable": [
+						{
+							"key": "key",
+							"value": "theKey"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/route/observable/expected/:key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/route/observable/expected/:key",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"route",
+						"observable",
+						"expected",
+						":key"
+					],
+					"variable": [
+						{
+							"key": "key",
+							"value": "theKey"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/route/persistence/:key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/route/persistence/:key",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"route",
+						"persistence",
+						":key"
+					],
+					"variable": [
+						{
+							"key": "key",
+							"value": "55"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/route/login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "18018b13-e75d-40ae-ad5f-26d100469654",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.environment.set(\"token\", jsonData.success.token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "user",
+							"value": "user",
+							"type": "text"
+						},
+						{
+							"key": "pass",
+							"value": "pass",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/route/login",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"route",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/route/auth",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/route/auth",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"route",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

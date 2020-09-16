@@ -1,0 +1,32 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "target": "es2017",
+    "module": "AMD",
+    "declaration": true,
+    "downlevelIteration": true,
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "types": ["node"],
+    "typeRoots": [
+      "node_modules/@types",
+      "src",
+      "."
+    ],
+    "lib": [
+      "es2017",
+      "dom"
+    ]
+  },
+  "include": [ "src" ],
+  "exclude": [ "node_modules", "src/test", "src/*.ts" ]
+}

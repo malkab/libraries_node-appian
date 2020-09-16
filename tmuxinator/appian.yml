@@ -1,0 +1,25 @@
+name: appian
+root: /home/git/malkab-libraries-node/appian
+
+windows:
+
+  - appian: >
+      sleep 5 ;
+      . mlkcontext common ;
+      cd docker ;
+      clear ;
+      ./020-node-interactive.sh
+
+  - psql: >
+      sleep 10 ;
+      . mlkcontext common ;
+      cd docker ;
+      clear ;
+      ./100-pg-psql.sh
+
+  - compose: >
+      sleep 0.5 ;
+      . mlkcontext common ;
+      cd docker ;
+      clear ;
+      ./010-compose-up.sh ;

@@ -1,0 +1,15 @@
+node_modules
+build
+src
+typedoc
+test
+.editorconfig
+.jshintrc
+README-package-json.md
+tsconfig.json
+tslint.json
+webpack*
+*.tgz
+scripts
+README_boilerplate.md
+yarn-error.log

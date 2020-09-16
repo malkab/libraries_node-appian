@@ -1,0 +1,44 @@
+version: '3.5'
+
+networks:
+  appian:
+    external: false
+    name: ${MLKC_APP_NAME}
+
+services:
+  postgis:
+    image: malkab/postgis:${MLKC_POSTGIS_IMAGE}
+    container_name: appian-postgis
+    shm_size: '2gb'
+
+    environment:
+      - PASSWORD=postgres
+
+    networks:
+      - appian
+
+    ports:
+      - "5436:5432"
+
+    volumes:
+      - ./000-localhost-volumes/appian-postgis:/data
+      - ./assets/postgresql.conf:/default_confs/postgresql.conf
+
+  redis:
+    image: redis:5.0
+    container_name: appian-redis
+    shm_size: '2gb'
+
+    networks:
+      - appian
+
+    ports:
+      - "6379:6379"
+
+    volumes:
+      - ./assets/redis.conf:/redis.conf:ro
+      - ./000-localhost-volumes/appian-redis:/data
+
+    entrypoint:
+      - redis-server
+      - /redis.conf
