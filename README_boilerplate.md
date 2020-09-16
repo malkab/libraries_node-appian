@@ -26,7 +26,9 @@ Steps:
 
 - close the Git Flow feature and go back to **develop**, if any;
 
-- if applicable, create a new Git Flow **Release** by the name **vX.X.X**;
+- if applicable, create a new Git Flow **Release** by the name **vX.X.X**:
+
+  - title tag message with **vX.X.X**;
 
 - push all branches and tags to GitLab:
 
