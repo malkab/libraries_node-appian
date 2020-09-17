@@ -563,7 +563,7 @@ export class TestRouter extends ApiRouter {
       deleteMethod$: (o: OrmTest) => o.pgDelete$(this._pgCon),
       router: this,
       type: OrmTest,
-      baseUrl: "orm",
+      baseUrl: "/orm",
       keysUrlParameters: [ ":a", ":b" ],
       keylessPostMethod: false,
       badRequestErrorPayload: ({ error: e }) =>

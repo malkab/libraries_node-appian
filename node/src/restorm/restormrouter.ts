@@ -23,6 +23,15 @@ import { StatusCodes } from 'http-status-codes';
  *
  * - **bodies** for the POST and PATCH requests.
  *
+ * Usage patterns:
+ *
+ * - the xxxIResponsePayload functions allows not only to modulate the default
+ *   response of the REST method, but also to perform any postprocessing or side
+ *   effect on the create object;
+ *
+ * - likewise, the xxxMethod$ allows for preprocessing of the objects before
+ *   performing the REST operation.
+ *
  * @typeParam T                     A type that extends the IRestOrm interface.
  *                                  This object is the one to persist.
  * @param __namedParameters         Parameters to configure the creation of the
@@ -98,7 +107,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     getMethod$,
     patchMethod$,
     deleteMethod$,
-    baseUrl,
+    baseUrl = "",
     keysUrlParameters = [ ":id" ],
     keylessPostMethod = true,
     prefixMiddlewares = [ addMetadata(router.module, router.log) ],
@@ -134,7 +143,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     getMethod$: (params: any) => rx.Observable<T>;
     patchMethod$: (object: T) => rx.Observable<any>;
     deleteMethod$: (object: T) => rx.Observable<any>;
-    baseUrl: string;
+    baseUrl?: string;
     keysUrlParameters?: string[];
     keylessPostMethod?: boolean;
     prefixMiddlewares?: any[];
@@ -172,7 +181,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
    *
    */
   router.router.post(
-    `/${baseUrl}/${postUrlParameters.join("/")}`,
+    `${baseUrl}/${postUrlParameters.join("/")}`,
     ...prefixMiddlewares,
     (request: Request, response: Response, next: any) => {
 
@@ -259,7 +268,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
    *
    */
   router.router.get(
-    `/${baseUrl}/${keysUrlParameters.join("/")}`,
+    `${baseUrl}/${keysUrlParameters.join("/")}`,
     ...prefixMiddlewares,
     (request: Request, response: Response, next: any) => {
 
@@ -325,7 +334,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
    *
    */
   router.router.patch(
-    `/${baseUrl}/${keysUrlParameters.join("/")}`,
+    `${baseUrl}/${keysUrlParameters.join("/")}`,
     ...prefixMiddlewares,
     (request: Request, response: Response, next: any) => {
 
@@ -405,7 +414,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
    *
    */
   router.router.delete(
-    `/${baseUrl}/${keysUrlParameters.join("/")}`,
+    `${baseUrl}/${keysUrlParameters.join("/")}`,
     ...prefixMiddlewares,
     (request: Request, response: Response, next: any) => {
 
