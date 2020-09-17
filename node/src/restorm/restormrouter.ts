@@ -101,253 +101,70 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     baseUrl,
     keysUrlParameters = [ ":id" ],
     keylessPostMethod = true,
-    prefixMiddlewares = [
-      addMetadata(router.module, router.log)
-    ],
-    suffixMiddlewares = [
-      processResponse({})
-    ],
-    badRequestErrorPayload = ({
-        /** The error producing the response. */
-        error = null,
-        /** The object, if any has been able to be generated. */
-        object = null,
-        /** The Express request. */
-        request = null,
-        /** The Express response. */
-        response = null
-      }: {
-        error?: any;
-        object?: T;
-        request?: Request;
-        response?: Response;
-    } = {}) => request.body,
-    duplicatedErrorPayload = ({
-        /** The error producing the response. */
-        error = null,
-        /** The object, if any has been able to be generated. */
-        object = null,
-        /** The Express request. */
-        request = null,
-        /** The Express response. */
-        response = null
-      }: {
-        error?: any;
-        object?: T;
-        request?: Request;
-        response?: Response;
-    } = {}) => request.body,
-    internalErrorPayload = ({
-        /** The error producing the response. */
-        error,
-        /** The object, if any has been able to be generated. */
-        object,
-        /** The Express request. */
-        request,
-        /** The Express response. */
-        response
-      }: {
-        error?: any;
-        object?: T;
-        request?: Request;
-        response?: Response;
-    } = {}) => request.body,
-    notFoundErrorPayload = ({
-        /** The error producing the response. */
-        error,
-        /** The object, if any has been able to be generated. */
-        object,
-        /** The Express request. */
-        request,
-        /** The Express response. */
-        response
-      }: {
-        error?: any;
-        object?: T;
-        request?: Request;
-        response?: Response;
-    } = {}) => request.body,
-    postIResponsePayload = ({
-        /** The generated object.  */
-        object = null,
-        /** The Express request. */
-        request = null,
-        /** The Express response. */
-        response = null
-      }: {
-        object?: T;
-        request?: Request;
-        response?: Response;
-    } = {}) => <IResponsePayload>{ payload: object },
-    getIResponsePayload = ({
-        /** The generated object.  */
-        object = null,
-        /** The Express request. */
-        request = null,
-        /** The Express response. */
-        response = null
-      }: {
-        object?: T;
-        request?: Request;
-        response?: Response;
-    } = {}) => <IResponsePayload>{ payload: object },
-    patchIResponsePayload = ({
-        /** The generated object.  */
-        object = null,
-        /** The Express request. */
-        request = null,
-        /** The Express response. */
-        response = null
-      }: {
-        object?: T;
-        request?: Request;
-        response?: Response;
-    } = {}) => <IResponsePayload>{ payload: object },
-    deleteIResponsePayload = ({
-        /** The generated object.  */
-        object = null,
-        /** The Express request. */
-        request = null,
-        /** The Express response. */
-        response = null
-      }: {
-        object?: T;
-        request?: Request;
-        response?: Response;
-    } = {}) => <IResponsePayload>{ payload: object },
+    prefixMiddlewares = [ addMetadata(router.module, router.log) ],
+    suffixMiddlewares = [ processResponse({}) ],
+    badRequestErrorPayload =
+      ({ error: error, object: object, request: request, response: response }) =>
+      request.body,
+    duplicatedErrorPayload =
+      ({ error: error, object: object, request: request, response: response }) =>
+      request.body,
+    internalErrorPayload =
+      ({ error: error, object: object, request: request, response: response }) =>
+      request.body,
+    notFoundErrorPayload =
+      ({ error: error, object: object, request: request, response: response }) =>
+      request.body,
+    postIResponsePayload =
+      ({ object: object, request: request, response: response }) =>
+      <IResponsePayload>{ payload: object },
+    getIResponsePayload =
+      ({ object: object, request: request, response: response }) =>
+      <IResponsePayload>{ payload: object },
+    patchIResponsePayload =
+      ({ object: object, request: request, response: response }) =>
+      <IResponsePayload>{ payload: object },
+    deleteIResponsePayload =
+      ({ object: object, request: request, response: response }) =>
+      <IResponsePayload>{ payload: object }
   }: {
-    /** The router to inject the generated methods. */
     router: ApiRouter;
-    /** The class of the object to persist. */
     type: any;
-    /**
-     * The function defining the post operation of the object. */
     postMethod$: (object: T) => rx.Observable<any>;
-    /** The function defining the get operation of the object. */
     getMethod$: (params: any) => rx.Observable<T>;
-    /** The function defining the patch operation of the object. */
     patchMethod$: (object: T) => rx.Observable<any>;
-    /** The function defining the delete operation of the object. */
     deleteMethod$: (object: T) => rx.Observable<any>;
-    /** The base URL to use when defining the entry points of the methods. */
     baseUrl: string;
-    /**
-     *
-     * The name of the parameters to be used in the methods that needs them to
-     * identify the set of the object's keys. This array of string must match
-     * the key parts of the desconstructed parameters of the object's
-     * constructor, for example, [ "idA", "idB" ] for a double key object.
-     *
-     */
     keysUrlParameters?: string[];
-    /**
-     *
-     * A binary flag to signal if the POST method will use key URL parameters
-     * or not. If not, keys must be included in the POST body.
-     *
-     */
     keylessPostMethod?: boolean;
-    /** Array of Express middlewares to execute before the generated entries. */
     prefixMiddlewares?: any[];
-    /** Array of Express middlewares to execute after the generated entries. */
     suffixMiddlewares?: any[];
-    /** The payload response when processing a bad request errors. */
-    badRequestErrorPayload?: ({
-      error,
-      object,
-      request,
-      response
-    }: {
-      error?: any;
-      object?: T;
-      request?: Request;
-      response?: Response;
-    }) => any;
-    /** The payload response when processing duplicated request errors. */
-    duplicatedErrorPayload?: ({
-      error,
-      object,
-      request,
-      response
-    }: {
-      error?: any;
-      object?: T;
-      request?: Request;
-      response?: Response;
-    }) => any;
-    /**
-     *
-     * The payload response when processing internal error request errors.
-     * Although the final API response will depend on the custom error returned
-     * by the processResponse suffix middleware (if any), this is what is going
-     * to go to the logs.
-     *
-     */
-    internalErrorPayload?: ({
-      error,
-      object,
-      request,
-      response
-    }: {
-      error?: any;
-      object?: T;
-      request?: Request;
-      response?: Response;
-    }) => any;
-    /** The payload response when processing not found request errors. */
-    notFoundErrorPayload?: ({
-      error,
-      request,
-      response
-    }: {
-      error?: any;
-      request?: Request;
-      response?: Response;
-    }) => any;
-    /** The payload for successfull responses to POST requests. */
-    postIResponsePayload?: ({
-      object,
-      request,
-      response
-    }: {
-      object: T;
-      request?: Request;
-      response?: Response;
-    }) => IResponsePayload;
-    /** The payload for successfull responses to GET requests. */
-    getIResponsePayload?: ({
-      object,
-      request,
-      response
-    }: {
-      object: T;
-      request?: Request;
-      response?: Response;
-    }) => IResponsePayload;
-    /** The payload for successfull responses to PATCH requests. */
-    patchIResponsePayload?: ({
-      object,
-      request,
-      response
-    }: {
-      object: T;
-      request?: Request;
-      response?: Response;
-    }) => IResponsePayload;
-    /** The payload for successfull responses to POST requests. */
-    deleteIResponsePayload?: ({
-      object,
-      request,
-      response
-    }: {
-      object: T;
-      request?: Request;
-      response?: Response;
-    }) => IResponsePayload;
+    badRequestErrorPayload?: ({ error, object, request, response }:
+      { error: any; object?: T; request: Request; response: Response; }) => any;
+    duplicatedErrorPayload?: ({ error, object, request, response }:
+      { error: any; object: T; request: Request; response: Response; }) =>
+      any;
+    internalErrorPayload?: ({ error, object, request, response }:
+      { error: any; object?: T, request: Request; response: Response; }) =>
+      any;
+    notFoundErrorPayload?: ({ error, object, request, response }:
+      { error: any; object?: T, request: Request; response: Response; }) => any;
+    postIResponsePayload?: ({ object, request, response }:
+      { object: T; request: Request; response: Response; }) =>
+      IResponsePayload;
+    getIResponsePayload?: ({ object, request, response }:
+      { object: T; request: Request; response: Response; }) =>
+      IResponsePayload;
+    patchIResponsePayload?: ({ object, request, response }:
+      { object: T; request: Request; response: Response; }) =>
+      IResponsePayload;
+    deleteIResponsePayload?: ({ object, request, response }:
+      { object: T; request: Request; response: Response; }) =>
+      IResponsePayload;
 }): void {
 
   // Check for keyless POST method parameters
-  const postUrlParameters: string[] = keylessPostMethod ? [ null ] : keysUrlParameters;
+  const postUrlParameters: string[] = keylessPostMethod ? [] : keysUrlParameters;
 
   /**
    *
@@ -360,7 +177,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     (request: Request, response: Response, next: any) => {
 
       // The created object from the request.body
-      let object: T = null;
+      let object: T = <any>undefined;
 
       try {
 
@@ -374,7 +191,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           error: e,
           httpStatus: StatusCodes.BAD_REQUEST,
           payload: badRequestErrorPayload(
-            { error: e, object: object, request: request, response: response })
+            { error: e, request: request, response: response })
         });
 
       }
@@ -459,7 +276,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
               error: e,
               httpStatus: StatusCodes.BAD_REQUEST,
               payload: badRequestErrorPayload(
-                { error: e, object: null, request: request, response: response })
+                { error: e, request: request, response: response })
             });
 
           }
@@ -481,7 +298,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
             error: e,
             httpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
             payload: internalErrorPayload(
-              { error: e, object: null, request: request, response: response })
+              { error: e, request: request, response: response })
           });
 
         }),
@@ -513,7 +330,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     (request: Request, response: Response, next: any) => {
 
       // The created object from the request.body
-      let object: T = null;
+      let object: T;
 
       // Process pipeline: check if the object exists
       response.appianObservable = getMethod$(request.params)
@@ -539,7 +356,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
               error: e,
               httpStatus: StatusCodes.BAD_REQUEST,
               payload: badRequestErrorPayload(
-                { error: e, object: null, request: request, response: response })
+                { error: e, request: request, response: response })
             });
 
           }
@@ -561,7 +378,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
             error: e,
             httpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
             payload: internalErrorPayload(
-              { error: e, object: null, request: request, response: response })
+              { error: e, object: undefined, request: request, response: response })
           });
 
         }),
@@ -593,7 +410,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     (request: Request, response: Response, next: any) => {
 
       // The created object from the request.body
-      let object: T = null;
+      let object: T;
 
       // Process pipeline: get the object
       response.appianObservable = getMethod$(request.params)
@@ -618,7 +435,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
               error: e,
               httpStatus: StatusCodes.BAD_REQUEST,
               payload: badRequestErrorPayload(
-                { error: e, object: null, request: request, response: response })
+                { error: e, request: request, response: response })
             });
 
           }
@@ -640,7 +457,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
             error: e,
             httpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
             payload: internalErrorPayload(
-              { error: e, object: null, request: request, response: response })
+              { error: e, request: request, response: response })
           });
 
         }),

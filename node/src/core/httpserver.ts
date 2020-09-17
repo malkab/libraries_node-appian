@@ -6,7 +6,7 @@ import * as cookieParser from "cookie-parser";
 
 import * as cors from "cors";
 
-import * as express from "express";
+import express from "express";
 
 import * as fs from "fs";
 
@@ -31,6 +31,8 @@ import { ApiSuccess } from './apisuccess';
 import { IResponsePayload } from './iresponsepayload';
 
 import * as lodash from "lodash";
+
+import { AddressInfo } from 'net';
 
 /**
  *
@@ -111,8 +113,8 @@ export class HttpServer {
   constructor({
     port = 8080,
     urlLimit = "2mb",
-    routes = null,
-    statics = null,
+    routes,
+    statics,
     requestLogFilePath = "/logs/httpaccess.csv"
   }: {
     port?: number;
@@ -131,13 +133,13 @@ export class HttpServer {
     // The port
     this._port = port;
     this._urlLimit = urlLimit;
-    this._app = express();
+    this._app = express() as express.Application;
 
     // Configure express and logging stuff
     this._expressConfiguration();
 
     // Use Cookie Parser
-    this._app.use(cookieParser());
+    this._app.use(cookieParser.default());
 
     // Configure routes
     if (routes) {
@@ -185,14 +187,14 @@ export class HttpServer {
       next();
     });
 
-    this._app.use(cors());
+    this._app.use(cors.default());
 
     // Morgan settings
     const accessLogStream =
       fs.createWriteStream(this._requestLogFilePath, { flags: 'a' })
 
     // To file
-    this._app.use(morgan(
+    this._app.use(morgan.default(
       "':remote-addr',':remote-user',':date[iso]',':method',':url',':http-version',':status',':response-time[digits]',':res[content-length]',':referrer',':user-agent'",
       { stream: accessLogStream }
     ));
@@ -200,7 +202,7 @@ export class HttpServer {
     // To console, only if NODE_ENV is different from production
     if (process.env.NODE_ENV !== 'production') {
 
-      this._app.use(morgan(
+      this._app.use(morgan.default(
         ":date[iso] :method :url :status :response-time[digits]ms :res[content-length]b"
       ));
 
@@ -263,7 +265,7 @@ export class HttpServer {
 
   private _onListening = () => {
 
-    const addr = this.server.address();
+    const addr: AddressInfo = this.server.address() as AddressInfo;
 
     const bind = typeof addr ===
       "string" ? `pipe ${addr}` : `port ${addr.port}`;
@@ -369,7 +371,7 @@ export function httpError({
     httpResponse,
     httpRequest,
     error,
-    log = null,
+    log,
     doNotEchoBody = false,
     doNotEchoErrorPayload = false,
     unexpectedErrorMessage = "unexpected error"
@@ -410,7 +412,7 @@ any {
   }
 
   // Log, if log
-  if (log !== null) {
+  if (log !== undefined) {
 
     log.logError({
       message: error.error.message,
@@ -469,7 +471,7 @@ export function httpSuccess({
     success,
     httpResponse,
     httpRequest,
-    log = null,
+    log,
     verbose = true
   }: {
     success: ApiSuccess;
@@ -499,7 +501,7 @@ export function httpSuccess({
   }
 
   // Log if log
-  if (log !== null) {
+  if (log !== undefined) {
 
     log.logInfo({
       methodName: httpRequest.route.path,
@@ -627,7 +629,7 @@ export function processResponse({
  */
 export function errorFactory(
   error: ApiError | Error,
-  module: string = null
+  module: string
 ): ApiError {
 
   // Check if parameter is an ApiError
@@ -651,12 +653,13 @@ export function errorFactory(
  * - module name
  *
  */
-export function addMetadata(module: string, log: NodeLogger = null):
+export function addMetadata(module: string, log?: NodeLogger):
 (req: Request, res: Response, next: any) => void {
 
   return (req: Request, res: Response, next: any) => {
 
     res.appianModule = module;
+
     res.appianLog = log;
 
     next();

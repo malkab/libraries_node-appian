@@ -1,10 +1,10 @@
 import * as rx from "rxjs";
 
-import { ApiError } from "./src/core/apierror";
+import { ApiError } from "./core/apierror";
 
-import { ApiSuccess } from "./src/core/apisuccess";
+import { ApiSuccess } from "./core/apisuccess";
 
-import { IResponsePayload } from "./src/core/iresponsepayload";
+import { IResponsePayload } from "./core/iresponsepayload";
 
 import { NodeLogger } from "@malkab/node-logger";
 
@@ -30,7 +30,7 @@ declare global {
       appianSuccess: ApiSuccess;
       appianObservable: rx.Observable<IResponsePayload>;
       appianModule: string;
-      appianLog: NodeLogger;
+      appianLog?: NodeLogger;
     }
 
   }
