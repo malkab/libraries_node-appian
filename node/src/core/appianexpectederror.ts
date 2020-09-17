@@ -17,14 +17,15 @@ export class AppianExpectedError extends Error {
    * The module name the error was thrown in.
    *
    */
-  private _module: string;
+  private _module: string | undefined;
 
   /**
    *
    * The module name the error was thrown in.
    *
    */
-  get module(): string { return this._module; }
+  get module(): string | undefined {
+    return this._module ? this._module : undefined; }
 
   /**
    *
@@ -103,10 +104,10 @@ export class AppianExpectedError extends Error {
    *
    */
   constructor({
-      module = null,
+      module,
       payload = null,
       logPayload = payload,
-      error = null
+      error
     }: {
       module?: string;
       payload?: any;
@@ -115,9 +116,9 @@ export class AppianExpectedError extends Error {
     }
   ) {
 
-    super(error.message);
+    super(error ? error.message : "");
 
-    this._module = module;
+    this._module = module ? module : undefined;
     this._payload = payload;
     this._logPayload = logPayload;
     this._error = error;

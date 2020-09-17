@@ -17,7 +17,7 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "noImplicitAny": true,
-    "strict": true,
+    "strict": false,
     "noEmitOnError": true,
     "removeComments": true,
     "preserveConstEnums": true,

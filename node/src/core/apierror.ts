@@ -66,10 +66,10 @@ export class ApiError extends AppianExpectedError {
    *
    */
   constructor({
-      module = null,
+      module,
       payload = null,
       logPayload = payload,
-      error = null,
+      error,
       httpStatus = HTTPERRORCODES.INTERNAL_SERVER_ERROR
     }: {
       module?: string;

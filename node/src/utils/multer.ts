@@ -1,4 +1,4 @@
-import * as multer from "multer";
+import multer from "multer";
 
 import * as utilPath from "path";
 
@@ -57,29 +57,33 @@ export class Multer{
     }
 
     // Create a Multer
-    this._multer = multer.diskStorage({
+    this._multer = multer({
 
-      destination: (req: any, file: any, cb: any) => {
+      storage: multer.diskStorage({
 
-        cb(null, this._storagePath);
+        destination: (req: any, file: any, cb: any) => {
 
-      },
+          cb(null, this._storagePath);
 
-      filename: (req: any, file: any, cb: any) => {
+        },
 
-        if (originalName === false) {
+        filename: (req: any, file: any, cb: any) => {
 
-          const fileData = utilPath.parse(file.originalname);
+          if (originalName === false) {
 
-          cb(null, `${NodeUtilsHashing.genUid()}${fileData.ext}`);
+            const fileData = utilPath.parse(file.originalname);
 
-        } else {
+            cb(null, `${NodeUtilsHashing.genUid()}${fileData.ext}`);
 
-          cb(null, file.originalname);
+          } else {
+
+            cb(null, file.originalname);
+
+          }
 
         }
 
-      }
+      })
 
     })
 

@@ -237,7 +237,7 @@ export class JwtUserPassAuthRouter extends ApiRouter {
     refreshTokenLifespan = "1m",
     refreshTokenSecret = "refreshTokenSecret",
     urlBaseRoot = "/auth",
-    log = null,
+    log,
     additionalParams = null,
     loginEntryUrl = "/login",
     logoutEntryUrl = "/logout",
@@ -376,13 +376,17 @@ export class JwtUserPassAuthRouter extends ApiRouter {
 
         (error: any) => {
 
-          this._log.logError({
-            message: "unauthorized",
-            methodName: this._loginEntryUrl,
-            moduleName: this._module,
-            payload: { user: user, pass: pass,
-              httpStatus: StatusCodes.UNAUTHORIZED }
-          })
+          if (this._log) {
+
+            this._log.logError({
+              message: "unauthorized",
+              methodName: this._loginEntryUrl,
+              moduleName: this._module,
+              payload: { user: user, pass: pass,
+                httpStatus: StatusCodes.UNAUTHORIZED }
+            })
+
+          }
 
           res.sendStatus(StatusCodes.UNAUTHORIZED);
 
@@ -436,12 +440,16 @@ export class JwtUserPassAuthRouter extends ApiRouter {
       // If no cookie, drop
       if (token === undefined) {
 
-        this._log.logError({
-          message: "no cookie",
-          methodName: this._refreshEntryUrl,
-          moduleName: this._module,
-          payload: { httpStatus: StatusCodes.UNAUTHORIZED }
-        })
+        if (this._log) {
+
+          this._log.logError({
+            message: "no cookie",
+            methodName: this._refreshEntryUrl,
+            moduleName: this._module,
+            payload: { httpStatus: StatusCodes.UNAUTHORIZED }
+          })
+
+        }
 
         res.sendStatus(StatusCodes.UNAUTHORIZED);
 
@@ -450,15 +458,18 @@ export class JwtUserPassAuthRouter extends ApiRouter {
       // The error function, to not duplicate code
       const errorFunc: () => void = () => {
 
-        this._log.logError({
-          message: "invalid cookie",
-          methodName: this._refreshEntryUrl,
-          moduleName: this._module,
-          payload: {
-            httpStatus: StatusCodes.UNAUTHORIZED,
-            // token: token
-          }
-        })
+        if (this._log) {
+
+          this._log.logError({
+            message: "invalid cookie",
+            methodName: this._refreshEntryUrl,
+            moduleName: this._module,
+            payload: {
+              httpStatus: StatusCodes.UNAUTHORIZED
+            }
+          })
+
+        }
 
         res.sendStatus(StatusCodes.UNAUTHORIZED);
 
@@ -539,14 +550,18 @@ export class JwtUserPassAuthRouter extends ApiRouter {
    * Generates a very plain unauthorized message (logging it).
    *
    */
-  private _errorLogin(response: Response, user: string = null, pass: string = null) {
+  private _errorLogin(response: Response, user?: string, pass?: string) {
 
-    this._log.logError({
-      message: "unauthorized",
-      methodName: "/login",
-      moduleName: this._module,
-      payload: { user: user, pass: pass, httpStatus: StatusCodes.UNAUTHORIZED }
-    })
+    if (this._log) {
+
+      this._log.logError({
+        message: "unauthorized",
+        methodName: "/login",
+        moduleName: this._module,
+        payload: { user: user, pass: pass, httpStatus: StatusCodes.UNAUTHORIZED }
+      })
+
+    }
 
     response.sendStatus(StatusCodes.UNAUTHORIZED);
 

@@ -30,7 +30,7 @@ declare global {
       appianSuccess: ApiSuccess;
       appianObservable: rx.Observable<IResponsePayload>;
       appianModule: string;
-      appianLog: NodeLogger;
+      appianLog?: NodeLogger;
     }
 
   }

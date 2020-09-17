@@ -35,14 +35,15 @@ export class ApiRouter {
    * Info log method.
    *
    */
-  protected _log: NodeLogger;
+  protected _log: NodeLogger | undefined;
 
   /**
    *
    * Info log method.
    *
    */
-  get log(): NodeLogger { return this._log; }
+  get log(): NodeLogger | undefined {
+    return this._log ? this._log : undefined; }
 
   /**
    *
@@ -69,7 +70,7 @@ export class ApiRouter {
    */
   constructor({
     urlBaseRoot = "/",
-    log = null,
+    log,
     module
   }: {
     urlBaseRoot?: string;
@@ -79,7 +80,7 @@ export class ApiRouter {
 
     this._urlBaseRoot = urlBaseRoot;
     this.router = Router();
-    this._log = log;
+    this._log = log ? log : undefined;
     this._module = module;
 
   }

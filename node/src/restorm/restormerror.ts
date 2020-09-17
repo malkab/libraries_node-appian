@@ -70,10 +70,10 @@ export class RestOrmError extends AppianExpectedError {
    *
    */
   constructor({
-      module = null,
+      module,
       payload = null,
       logPayload = payload,
-      error = null,
+      error,
       code = ERESTORMERRORCODES.INTERNAL_ERROR
     }: {
       /**

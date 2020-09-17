@@ -1,4 +1,4 @@
-import * as multer from "multer";
+import multer from "multer";
 
 /**
  *
@@ -33,7 +33,11 @@ export class MulterMemory{
   constructor() {
 
     // Create a Multer
-    this._multer = multer.memoryStorage()
+    this._multer = multer({
+
+      storage: multer.memoryStorage()
+
+    })
 
   }
 

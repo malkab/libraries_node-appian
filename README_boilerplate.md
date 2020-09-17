@@ -24,7 +24,7 @@ Steps:
 
 - test **npm publish**, changing version with **npm version** if needed;
 
-- close the Git Flow feature and go back to **develop**, if any;
+- close the Git commit, the Git Flow feature, and go back to **develop**, if applicable;
 
 - if applicable, create a new Git Flow **Release** by the name **vX.X.X**:
 
