@@ -9,7 +9,6 @@ import { Request, Response, ApiError, IResponsePayload, ApiRouter, addMetadata, 
 import { IRestOrm } from "./irestorm";
 
 import { StatusCodes } from 'http-status-codes';
-import { request } from 'http';
 
 /**
  *
@@ -33,98 +32,125 @@ import { request } from 'http';
  * - likewise, the xxxMethod$ allows for preprocessing of the objects before
  *   performing the REST operation.
  *
- * @typeParam T                     A type that extends the IRestOrm interface.
- *                                  This object is the one to persist.
- * @param __namedParameters         Parameters to configure the creation of the
- *                                  API entries for REST operations.
- * @param module                    The module this router is being defined at,
- *                                  for logging.
- * @param router                    The router to inject the generated methods
- *                                  into.
- * @param type                      The class of the object to persist.
- * @param postMethod$               The function defining the post operation of
- *                                  the object. Gets the object parameters in
- *                                  the request body and tries to construct an
- *                                  object with them. If successfull, it is
- *                                  written at the persistence using the
- *                                  provided method. The REST API method
- *                                  generated can be with key parameters
- *                                  (/whatever/key1/key2) or without them,
- *                                  providing the user the keys directly at the
- *                                  request body. Returns an Observable.
- * @param getMethod$                The function defining the get operation of
- *                                  the object. Gets the object referenced at
- *                                  the REST method by the key and returns an
- *                                  Observable with the retrieved object.
- * @param patchMethod$              The function defining the patch operation of
- *                                  the object. Gets the object referenced at
- *                                  the REST method by the key, constructs it,
- *                                  tries to modify it with the patch$ function
- *                                  and returns an Observable.
- * @param deleteMethod$             The function defining the delete operation
- *                                  of the object. Gets the object referenced at
- *                                  the REST method by the key a run its delete
- *                                  method, returning an Observable.
- * @param baseUrl                   The base URL to use when defining the entry
- *                                  points of the methods.
- * @param keysUrlParameters         The name of the parameters to be used in the
- *                                  methods that needs them to identify the set
- *                                  of the object's keys. This array of string
- *                                  must match the key parts of the
- *                                  desconstructed parameters of the object's
- *                                  constructor, for example, [ "idA", "idB" ]
- *                                  for a double key object.
- * @param keylessPostMethod         A binary flag to signal if the POST method
- *                                  will use key URL parameters or not. If not,
- *                                  keys must be included in the POST body.
- * @param prefixMiddlewares         Array of Express middlewares to execute
- *                                  before the generated entries.
- * @param suffixMiddlewares         Array of Express middlewares to execute
- *                                  after the generated entries.
- * @param badRequestErrorPayload    The payload response when processing a bad
- *                                  request errors.
- * @param duplicatedErrorPayload    The payload response when processing
- *                                  duplicated request errors.
- * @param internalErrorPayload      The payload response when processing
- *                                  internal error request errors. Although the
- *                                  final API response will depend on the custom
- *                                  error returned by the processResponse suffix
- *                                  middleware (if any), this is what is going
- *                                  to go to the logs.
- * @param notFoundErrorPayload      The payload response when processing not
- *                                  found request errors.
- * @param postIResponsePayload      The payload for successfull responses to
- *                                  POST requests.
- * @param postPrefixMiddlewares     Custom prefix middlewares for POST. If not
- *                                  provided, the **prefixMiddlewares** will be
- *                                  used.
- * @param postSuffixMiddlewares     Custom suffix middlewares for POST. If not
- *                                  provided, the **suffixMiddlewares** will be
- *                                  used.
- * @param getIResponsePayload       The payload for successfull responses to GET
- *                                  requests.
- * @param getPrefixMiddlewares      Custom prefix middlewares for GET. If not
- *                                  provided, the **prefixMiddlewares** will be
- *                                  used.
- * @param getSuffixMiddlewares      Custom suffix middlewares for GET. If not
- *                                  provided, the **suffixMiddlewares** will be
- *                                  used.
- * @param patchIResponsePayload     The payload for successfull responses to
- *                                  PATCH requests.
- * @param patchPrefixMiddlewares    Custom prefix middlewares for PATCH. If not
- *                                  provided, the **prefixMiddlewares** will be
- *                                  used.
- * @param patchSuffixMiddlewares    Custom suffix middlewares for PATCH. If not
- *                                  provided, the **suffixMiddlewares** will be
- *                                  used.
- * @param deleteIResponsePayload    The payload for successfull responses to
- *                                  DELETE requests.
- * @param deletePrefixMiddlewares   Custom prefix middlewares for DELETE. If not
- *                                  provided, the **prefixMiddlewares** will be
- *                                  used.
- * @param deleteSuffixMiddlewares   Custom suffix middlewares for DELETE. If not
- *                                  provided, the **suffixMiddlewares** will be
- *                                  used.
+ * @typeParam T
+ * A type that extends the IRestOrm interface. This object is the one to
+ * persist.
+ *
+ * @param __namedParameters
+ * Parameters to configure the creation of the API entries for REST operations.
+ *
+ * @param module
+ * The module this router is being defined at, for logging.
+ *
+ * @param router
+ * The router to inject the generated methods into.
+ *
+ * @param type
+ * The class of the object to persist.
+ *
+ * @param postMethod$
+ * The function defining the post operation of the object. Gets the object
+ * parameters in the request body and tries to construct an object with them. If
+ * successfull, it is written at the persistence using the provided method. The
+ * REST API method generated can be with key parameters (/whatever/key1/key2) or
+ * without them, providing the user the keys directly at the request body.
+ * Returns an Observable.
+ *
+ * @param getMethod$
+ * The function defining the get operation of the object. Gets the object
+ * referenced at the REST method by the key and returns an Observable with the
+ * retrieved object.
+ *
+ * @param patchMethod$
+ * The function defining the patch operation of the object. Gets the object
+ * referenced at the REST method by the key, constructs it, tries to modify it
+ * with the patch$ function and returns an Observable.
+
+ * @param deleteMethod$
+ * The function defining the delete operation of the object. Gets the object
+ * referenced at the REST method by the key a run its delete method, returning
+ * an Observable.
+ *
+ * @param baseUrl
+ * The base URL to use when defining the entry points of the methods.
+ *
+ * @param keysUrlParameters
+ * The name of the parameters to be used in the methods that needs them to
+ * identify the set of the object's keys. This array of string must match the
+ * key parts of the desconstructed parameters of the object's constructor, for
+ * example, [ "idA", "idB" ] for a double key object.
+ *
+ * @param keylessPostMethod
+ * A binary flag to signal if the POST method will use key URL parameters or
+ * not. If not, keys must be included in the POST body.
+ *
+ * @param prefixMiddlewares
+ * Array of Express middlewares to execute before the generated entries.
+ *
+ * @param suffixMiddlewares
+ * Array of Express middlewares to execute after the generated entries.
+ *
+ * @param badRequestErrorPayload
+ * The payload response when processing a bad request errors.
+ *
+ * @param duplicatedErrorPayload
+ * The payload response when processing duplicated request errors.
+ *
+ * @param foreignKeyViolationErrorPayload
+ * Payload response when processing foreign key violation errors.
+ *
+ * @param internalErrorPayload
+ * The payload response when processing internal error request errors. Although
+ * the final API response will depend on the custom error returned by the
+ * processResponse suffix middleware (if any), this is what is going to go to
+ * the logs.
+ *
+ * @param notFoundErrorPayload
+ * The payload response when processing not found request errors.
+ *
+ * @param postIResponsePayload
+ * The payload for successfull responses to POST requests.
+ *
+ * @param postPrefixMiddlewares
+ * Custom prefix middlewares for POST. If not provided, the
+ * **prefixMiddlewares** will be used.
+ *
+ * @param postSuffixMiddlewares
+ * Custom suffix middlewares for POST. If not provided, the
+ * **suffixMiddlewares** will be used.
+ *
+ * @param getIResponsePayload
+ * The payload for successfull responses to GET requests.
+ *
+ * @param getPrefixMiddlewares
+ * Custom prefix middlewares for GET. If not provided, the **prefixMiddlewares**
+ * will be used.
+ *
+ * @param getSuffixMiddlewares
+ * Custom suffix middlewares for GET. If not provided, the **suffixMiddlewares**
+ * will be used.
+ *
+ * @param patchIResponsePayload
+ * The payload for successfull responses to PATCH requests.
+
+ * @param patchPrefixMiddlewares
+ * Custom prefix middlewares for PATCH. If not provided, the
+ * **prefixMiddlewares** will be used.
+ *
+ * @param patchSuffixMiddlewares
+ * Custom suffix middlewares for PATCH. If not provided, the
+ * **suffixMiddlewares** will be used.
+ *
+ * @param deleteIResponsePayload
+ * The payload for successfull responses to DELETE requests.
+ *
+ * @param deletePrefixMiddlewares
+ * Custom prefix middlewares for DELETE. If not provided, the
+ * **prefixMiddlewares** will be used.
+ *
+ * @param deleteSuffixMiddlewares
+ * Custom suffix middlewares for DELETE. If not provided, the
+ * **suffixMiddlewares** will be used.
  *
  */
 export function generateDefaultRestRouters<T extends IRestOrm<T>>({
@@ -144,6 +170,9 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
       ({ error: error, object: object, request: request, response: response }) =>
       request.body,
     duplicatedErrorPayload =
+      ({ error: error, object: object, request: request, response: response }) =>
+      request.body,
+    foreignKeyViolationErrorPayload =
       ({ error: error, object: object, request: request, response: response }) =>
       request.body,
     internalErrorPayload =
@@ -195,6 +224,9 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     badRequestErrorPayload?: ({ error, object, request, response }:
       { error: any; object?: T; request: Request; response: Response; }) => any;
     duplicatedErrorPayload?: ({ error, object, request, response }:
+      { error: any; object: T; request: Request; response: Response; }) =>
+      any;
+    foreignKeyViolationErrorPayload?: ({ error, object, request, response }:
       { error: any; object: T; request: Request; response: Response; }) =>
       any;
     internalErrorPayload?: ({ error, object, request, response }:
@@ -305,7 +337,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
               module: module,
               error: new Error("foreign key violation"),
               httpStatus: StatusCodes.CONFLICT,
-              payload: duplicatedErrorPayload(
+              payload: foreignKeyViolationErrorPayload(
                 { error: e, object: object, request: request, response: response })
             });
 
@@ -459,6 +491,19 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
               httpStatus: StatusCodes.BAD_REQUEST,
               payload: badRequestErrorPayload(
                 { error: e, request: request, response: response })
+            });
+
+          }
+
+          // Foreign key violation
+          if (e.code === PgOrm.EORMERRORCODES.FOREIGN_KEY_VIOLATION) {
+
+            throw new ApiError({
+              module: module,
+              error: new Error("foreign key violation"),
+              httpStatus: StatusCodes.CONFLICT,
+              payload: duplicatedErrorPayload(
+                { error: e, object: object, request: request, response: response })
             });
 
           }
