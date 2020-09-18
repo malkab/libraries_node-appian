@@ -9,6 +9,7 @@ import { Request, Response, ApiError, IResponsePayload, ApiRouter, addMetadata, 
 import { IRestOrm } from "./irestorm";
 
 import { StatusCodes } from 'http-status-codes';
+import { request } from 'http';
 
 /**
  *
@@ -36,6 +37,8 @@ import { StatusCodes } from 'http-status-codes';
  *                                  This object is the one to persist.
  * @param __namedParameters         Parameters to configure the creation of the
  *                                  API entries for REST operations.
+ * @param module                    The module this router is being defined at,
+ *                                  for logging.
  * @param router                    The router to inject the generated methods
  *                                  into.
  * @param type                      The class of the object to persist.
@@ -92,15 +95,40 @@ import { StatusCodes } from 'http-status-codes';
  *                                  found request errors.
  * @param postIResponsePayload      The payload for successfull responses to
  *                                  POST requests.
+ * @param postPrefixMiddlewares     Custom prefix middlewares for POST. If not
+ *                                  provided, the **prefixMiddlewares** will be
+ *                                  used.
+ * @param postSuffixMiddlewares     Custom suffix middlewares for POST. If not
+ *                                  provided, the **suffixMiddlewares** will be
+ *                                  used.
  * @param getIResponsePayload       The payload for successfull responses to GET
  *                                  requests.
+ * @param getPrefixMiddlewares      Custom prefix middlewares for GET. If not
+ *                                  provided, the **prefixMiddlewares** will be
+ *                                  used.
+ * @param getSuffixMiddlewares      Custom suffix middlewares for GET. If not
+ *                                  provided, the **suffixMiddlewares** will be
+ *                                  used.
  * @param patchIResponsePayload     The payload for successfull responses to
  *                                  PATCH requests.
+ * @param patchPrefixMiddlewares    Custom prefix middlewares for PATCH. If not
+ *                                  provided, the **prefixMiddlewares** will be
+ *                                  used.
+ * @param patchSuffixMiddlewares    Custom suffix middlewares for PATCH. If not
+ *                                  provided, the **suffixMiddlewares** will be
+ *                                  used.
  * @param deleteIResponsePayload    The payload for successfull responses to
  *                                  DELETE requests.
+ * @param deletePrefixMiddlewares   Custom prefix middlewares for DELETE. If not
+ *                                  provided, the **prefixMiddlewares** will be
+ *                                  used.
+ * @param deleteSuffixMiddlewares   Custom suffix middlewares for DELETE. If not
+ *                                  provided, the **suffixMiddlewares** will be
+ *                                  used.
  *
  */
 export function generateDefaultRestRouters<T extends IRestOrm<T>>({
+    module,
     router,
     type,
     postMethod$,
@@ -127,22 +155,38 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     postIResponsePayload =
       ({ object: object, request: request, response: response }) =>
       <IResponsePayload>{ payload: object },
+    postPrefixMiddlewares,
+    postSuffixMiddlewares,
     getIResponsePayload =
       ({ object: object, request: request, response: response }) =>
       <IResponsePayload>{ payload: object },
+    getPrefixMiddlewares,
+    getSuffixMiddlewares,
     patchIResponsePayload =
       ({ object: object, request: request, response: response }) =>
       <IResponsePayload>{ payload: object },
+    patchPrefixMiddlewares,
+    patchSuffixMiddlewares,
     deleteIResponsePayload =
       ({ object: object, request: request, response: response }) =>
-      <IResponsePayload>{ payload: object }
+      <IResponsePayload>{ payload: object },
+    deletePrefixMiddlewares,
+    deleteSuffixMiddlewares
   }: {
+    module: string;
     router: ApiRouter;
     type: any;
-    postMethod$: (object: T) => rx.Observable<any>;
-    getMethod$: (params: any) => rx.Observable<T>;
-    patchMethod$: (object: T) => rx.Observable<any>;
-    deleteMethod$: (object: T) => rx.Observable<any>;
+    postMethod$: ({ object, request, response }:
+      { object: T, request?: Request, response?: Response }) =>
+      rx.Observable<any>;
+    getMethod$: ({ request, response }:
+      { request: Request, response?: Response }) => rx.Observable<T>;
+    patchMethod$: ({ object, request, response }:
+      { object: T, request?: Request, response?: Response }) =>
+      rx.Observable<any>;
+    deleteMethod$: ({ object, request, response }:
+      { object: T, request?: Request, response?: Response }) =>
+      rx.Observable<any>;
     baseUrl?: string;
     keysUrlParameters?: string[];
     keylessPostMethod?: boolean;
@@ -161,19 +205,46 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     postIResponsePayload?: ({ object, request, response }:
       { object: T; request: Request; response: Response; }) =>
       IResponsePayload;
+    postPrefixMiddlewares?: any[];
+    postSuffixMiddlewares?: any[];
     getIResponsePayload?: ({ object, request, response }:
       { object: T; request: Request; response: Response; }) =>
       IResponsePayload;
+    getPrefixMiddlewares?: any[];
+    getSuffixMiddlewares?: any[];
     patchIResponsePayload?: ({ object, request, response }:
       { object: T; request: Request; response: Response; }) =>
       IResponsePayload;
+    patchPrefixMiddlewares?: any[];
+    patchSuffixMiddlewares?: any[];
     deleteIResponsePayload?: ({ object, request, response }:
       { object: T; request: Request; response: Response; }) =>
       IResponsePayload;
+    deletePrefixMiddlewares?: any[];
+    deleteSuffixMiddlewares?: any[];
 }): void {
 
   // Check for keyless POST method parameters
-  const postUrlParameters: string[] = keylessPostMethod ? [] : keysUrlParameters;
+  const postUrlParameters: string[] = keylessPostMethod ? [] :
+    keysUrlParameters;
+
+  // Check for custom pre and suffix middlewares
+  const postFinalPrefixMiddlewares: any [] =
+    postPrefixMiddlewares ? postPrefixMiddlewares : prefixMiddlewares;
+  const postFinalSuffixMiddlewares: any [] =
+    postSuffixMiddlewares ? postSuffixMiddlewares : suffixMiddlewares;
+  const getFinalPrefixMiddlewares: any [] =
+    getPrefixMiddlewares ? getPrefixMiddlewares : prefixMiddlewares;
+  const getFinalSuffixMiddlewares: any [] =
+    getSuffixMiddlewares ? getSuffixMiddlewares : suffixMiddlewares;
+  const patchFinalPrefixMiddlewares: any [] =
+    patchPrefixMiddlewares ? patchPrefixMiddlewares : prefixMiddlewares;
+  const patchFinalSuffixMiddlewares: any [] =
+    patchSuffixMiddlewares ? patchSuffixMiddlewares : suffixMiddlewares;
+  const deleteFinalPrefixMiddlewares: any [] =
+    deletePrefixMiddlewares ? deletePrefixMiddlewares : prefixMiddlewares;
+  const deleteFinalSuffixMiddlewares: any [] =
+    deleteSuffixMiddlewares ? deleteSuffixMiddlewares : suffixMiddlewares;
 
   /**
    *
@@ -182,7 +253,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
    */
   router.router.post(
     `${baseUrl}/${postUrlParameters.join("/")}`,
-    ...prefixMiddlewares,
+    ...postFinalPrefixMiddlewares,
     (request: Request, response: Response, next: any) => {
 
       // The created object from the request.body
@@ -197,6 +268,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
 
         // Error creating the object
         response.appianError = new ApiError({
+          module: module,
           error: e,
           httpStatus: StatusCodes.BAD_REQUEST,
           payload: badRequestErrorPayload(
@@ -206,7 +278,8 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
       }
 
       // Process pipeline
-      response.appianObservable = postMethod$(object)
+      response.appianObservable =
+      postMethod$({ object: object, request: request, response: response })
       .pipe(
 
         // Catch controlled errors
@@ -216,6 +289,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           if (e.code === PgOrm.EORMERRORCODES.DUPLICATED) {
 
             throw new ApiError({
+              module: module,
               error: new Error("duplicated"),
               httpStatus: StatusCodes.CONFLICT,
               payload: duplicatedErrorPayload(
@@ -228,6 +302,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           if (e.code === PgOrm.EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
 
             throw new ApiError({
+              module: module,
               error: new Error("bad request"),
               httpStatus: StatusCodes.BAD_REQUEST,
               payload: badRequestErrorPayload(
@@ -238,6 +313,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
 
           // Any other error: internal error
           throw new ApiError({
+            module: module,
             error: new Error("internal error"),
             httpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
             payload: internalErrorPayload(
@@ -259,7 +335,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
       next();
 
     },
-    ...suffixMiddlewares
+    ...postFinalSuffixMiddlewares
   );
 
   /**
@@ -269,11 +345,11 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
    */
   router.router.get(
     `${baseUrl}/${keysUrlParameters.join("/")}`,
-    ...prefixMiddlewares,
+    ...getFinalPrefixMiddlewares,
     (request: Request, response: Response, next: any) => {
 
       // Get based on the parameters passed in the URL
-      response.appianObservable = getMethod$(request.params)
+      response.appianObservable = getMethod$({ request: request, response: response })
       .pipe(
 
         rxo.catchError((e: any) => {
@@ -282,6 +358,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           if (e.code === PgOrm.EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
 
             throw new ApiError({
+              module: module,
               error: e,
               httpStatus: StatusCodes.BAD_REQUEST,
               payload: badRequestErrorPayload(
@@ -294,6 +371,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           if (e.code === PgOrm.EORMERRORCODES.NOT_FOUND) {
 
             throw new ApiError({
+              module: module,
               error: e,
               httpStatus: StatusCodes.NOT_FOUND,
               payload: notFoundErrorPayload(
@@ -304,6 +382,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
 
           // Any other error: internal error
           throw new ApiError({
+            module: module,
             error: e,
             httpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
             payload: internalErrorPayload(
@@ -325,7 +404,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
       next();
 
     },
-    ...suffixMiddlewares,
+    ...getFinalSuffixMiddlewares
   );
 
   /**
@@ -335,14 +414,14 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
    */
   router.router.patch(
     `${baseUrl}/${keysUrlParameters.join("/")}`,
-    ...prefixMiddlewares,
+    ...patchFinalPrefixMiddlewares,
     (request: Request, response: Response, next: any) => {
 
       // The created object from the request.body
       let object: T;
 
       // Process pipeline: check if the object exists
-      response.appianObservable = getMethod$(request.params)
+      response.appianObservable = getMethod$({ request: request, response: response })
       .pipe(
 
         // If it exists, make the patching with the **patch$** method defined at
@@ -351,7 +430,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
 
           object = o;
           object.patch$({ ...request.params, ...request.body });
-          return patchMethod$(object)
+          return patchMethod$({ object: object, request: request, response: response })
 
         }),
 
@@ -362,6 +441,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           if (e.code === PgOrm.EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
 
             throw new ApiError({
+              module: module,
               error: e,
               httpStatus: StatusCodes.BAD_REQUEST,
               payload: badRequestErrorPayload(
@@ -374,6 +454,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           if (e.code === PgOrm.EORMERRORCODES.NOT_FOUND) {
 
             throw new ApiError({
+              module: module,
               error: new Error("not found"),
               httpStatus: StatusCodes.NOT_FOUND,
               payload: notFoundErrorPayload(
@@ -384,6 +465,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
 
           // Internal error
           throw new ApiError({
+            module: module,
             error: e,
             httpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
             payload: internalErrorPayload(
@@ -405,7 +487,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
       next();
 
     },
-    ...suffixMiddlewares,
+    ...patchFinalSuffixMiddlewares
   );
 
   /**
@@ -415,14 +497,14 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
    */
   router.router.delete(
     `${baseUrl}/${keysUrlParameters.join("/")}`,
-    ...prefixMiddlewares,
+    ...deleteFinalPrefixMiddlewares,
     (request: Request, response: Response, next: any) => {
 
       // The created object from the request.body
       let object: T;
 
       // Process pipeline: get the object
-      response.appianObservable = getMethod$(request.params)
+      response.appianObservable = getMethod$({ request: request, response: response })
       .pipe(
 
         // Make the deletion
@@ -430,7 +512,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
 
           object = o;
 
-          return deleteMethod$(object)
+          return deleteMethod$({ object: object, request: request, response: response })
 
         }),
 
@@ -441,6 +523,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           if (e.code === PgOrm.EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
 
             throw new ApiError({
+              module: module,
               error: e,
               httpStatus: StatusCodes.BAD_REQUEST,
               payload: badRequestErrorPayload(
@@ -453,6 +536,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           if (e.code === PgOrm.EORMERRORCODES.NOT_FOUND) {
 
             throw new ApiError({
+              module: module,
               error: new Error("not found"),
               httpStatus: StatusCodes.NOT_FOUND,
               payload: notFoundErrorPayload(
@@ -463,6 +547,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
 
           // Unexpected error here
           throw new ApiError({
+            module: module,
             error: e,
             httpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
             payload: internalErrorPayload(
@@ -484,7 +569,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
       next();
 
     },
-    ...suffixMiddlewares,
+    ...patchFinalSuffixMiddlewares
   );
 
 }

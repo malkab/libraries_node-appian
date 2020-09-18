@@ -557,10 +557,19 @@ export class TestRouter extends ApiRouter {
      *
      */
     RestOrm.generateDefaultRestRouters<OrmTest>({
-      postMethod$: (o: OrmTest) => o.pgInsert$(this._pgCon),
-      getMethod$: (params: any) => OrmTest.get$(this._pgCon, params.a, params.b),
-      patchMethod$: (o: OrmTest) => o.pgUpdate$(this._pgCon),
-      deleteMethod$: (o: OrmTest) => o.pgDelete$(this._pgCon),
+      module: "testrouter",
+
+      // Complex logic is possible in the REST methods
+      postMethod$: ({ request: req, object: o }) => {
+        o.c = req.file.filename;
+        return o.pgInsert$(this._pgCon)
+      },
+      getMethod$: ({ request: req }) => OrmTest.get$(this._pgCon, +req.params.a, +req.params.b),
+      patchMethod$: ({ request: req, object: o }) => {
+        o.c = req.file.filename;
+        return o.pgUpdate$(this._pgCon)
+      },
+      deleteMethod$: ({ object: o }) => o.pgDelete$(this._pgCon),
       router: this,
       type: OrmTest,
       baseUrl: "/orm",
@@ -569,11 +578,11 @@ export class TestRouter extends ApiRouter {
       badRequestErrorPayload: ({ error: e }) =>
         { return { error: "bad request", e: e } },
       duplicatedErrorPayload: ({ error: e }) =>
-        { return { error: "duplicated", e: e } },
+        { return { message: "CACA" } },
       internalErrorPayload: ({ error: e }) =>
         { return { error: "internal error", e: e } },
       notFoundErrorPayload: ({ error: e}) =>
-        { return { error: e, } },
+        { return { error: "NOT FOUND" } },
       postIResponsePayload: ({ object: o }) =>
         { return <IResponsePayload>{ payload: { a: o.a, b: o.b } } },
       getIResponsePayload: ({ object: o }) =>
@@ -589,6 +598,16 @@ export class TestRouter extends ApiRouter {
       suffixMiddlewares: [
         processResponse({ verbose: true,
           unexpectedErrorMessage: "Internal error occured, contact support" })
+      ],
+      postPrefixMiddlewares: [
+        // Auth.bearerAuth(this._jwtToken, this._authentication),
+        addMetadata(this.module, this.log),
+        multerFile.multer.single("image")
+      ],
+      patchPrefixMiddlewares: [
+        // Auth.bearerAuth(this._jwtToken, this._authentication),
+        addMetadata(this.module, this.log),
+        multerFile.multer.single("image")
       ]
     });
 

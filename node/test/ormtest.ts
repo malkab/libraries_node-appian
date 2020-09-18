@@ -26,6 +26,7 @@ export class OrmTest implements PgOrm.IPgOrm<OrmTest>, RestOrm.IRestOrm<OrmTest>
   get a(): number { return this._a }
   get b(): number { return this._b }
   get c(): string { return this._c }
+  set c(c: string) { this._c = c }
   get d(): number { return this._d }
 
   private _a: number;

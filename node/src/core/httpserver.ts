@@ -531,6 +531,7 @@ export function processResponse({
 
   return (req: Request, res: Response): void => {
 
+    // Defined ApiError, expected error
     if (res.appianError !== undefined) {
 
       // Verbose?
@@ -544,6 +545,7 @@ export function processResponse({
         unexpectedErrorMessage: unexpectedErrorMessage
       });
 
+    // A success is reported
     } else if (res.appianSuccess !== undefined) {
 
       // Verbose?
@@ -556,6 +558,7 @@ export function processResponse({
         log: res.appianLog
       });
 
+    // An observable is reported
     } else if (res.appianObservable !== undefined) {
 
       res.appianObservable
@@ -583,11 +586,13 @@ export function processResponse({
 
         },
 
-        (error: any) => {
+        (error: ApiError | any) => {
 
           // Verbose?
           if (verbose) { console.log(error); }
 
+          // The errorFactory use here is in charge of analyzing if the provided
+          // error is an ApiError or an unexpected one
           httpError({
             error: errorFactory(error, res.appianModule),
             httpRequest: req,
@@ -595,7 +600,6 @@ export function processResponse({
             log: res.appianLog,
             unexpectedErrorMessage: unexpectedErrorMessage
           })
-
         }
 
       )
@@ -613,9 +617,9 @@ export function processResponse({
 /**
  *
  * This function process a generic error. If the error is of type ApiError
- * (identified by having the mandatory module property), it it just returned. If
- * not, it returns a new ApiError that encapsulates the error with a generic
- * description. This is used for automatic error management by the
+ * (identified by the boolean property **isAppianExpectedError**), it it just
+ * returned. If not, it returns a new ApiError that encapsulates the error with
+ * a generic description. This is used for automatic error management by the
  * {@link processResponse}. The **httpStatus** property of the generated
  * **ApiError** will be INTERNAL_SERVER_ERROR. No payload added.
  *
@@ -633,7 +637,7 @@ export function errorFactory(
 ): ApiError {
 
   // Check if parameter is an ApiError
-  if ((<ApiError>error).module === undefined) {
+  if (!(<ApiError>error).isAppianExpectedError) {
     return new ApiError({
       module: module,
       error: error,
