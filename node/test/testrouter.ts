@@ -124,9 +124,9 @@ export class TestRouter extends ApiRouter {
    */
   protected _configureRouter(): void {
 
-    const multerFile: any = new Utils.Multer("/data/a", true);
+    const multerFile: Utils.Multer = new Utils.Multer("/data/a", true);
 
-    const multerMemory: any = new Utils.MulterMemory();
+    const multerMemory: Utils.MulterMemory = new Utils.MulterMemory();
 
     /**
      *

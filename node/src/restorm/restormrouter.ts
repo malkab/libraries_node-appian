@@ -298,6 +298,19 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
 
           }
 
+          // Foreign key violation
+          if (e.code === PgOrm.EORMERRORCODES.FOREIGN_KEY_VIOLATION) {
+
+            throw new ApiError({
+              module: module,
+              error: new Error("foreign key violation"),
+              httpStatus: StatusCodes.CONFLICT,
+              payload: duplicatedErrorPayload(
+                { error: e, object: object, request: request, response: response })
+            });
+
+          }
+
           // Invalid parameters provided by the user
           if (e.code === PgOrm.EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
 

@@ -54,10 +54,10 @@
     rxjs "^6.6.2"
     uid-generator "^2.0.0"
 
-"@malkab/rxpg@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@malkab/rxpg/-/rxpg-3.1.0.tgz#bc32dc8093752de51828db94d73f537bac83ad06"
-  integrity sha512-jtFW0u7LdEZEOS6mKGkf6E63A3vbUstJJzX0z8XCdm8oxv/QynIbvU7vdNujTtmt5vU62c3YxitEGxKJ6ypw7g==
+"@malkab/rxpg@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@malkab/rxpg/-/rxpg-3.2.0.tgz#6e2cc4c89f574694ed023d6f5d8f9cadc3bd32f2"
+  integrity sha512-ECocII4dnhk0yVcOhLJ0Wvq478snXuJDpseR7TN1LLEe6xaFOib4hxJtK/VFBnIfF4jHUmYw8tdfvuH2K7x0Aw==
   dependencies:
     lodash "^4.17.20"
     pg "^8.3.3"
@@ -226,10 +226,15 @@
   dependencies:
     "@types/express" "*"
 
-"@types/node@*", "@types/node@^14.10.0":
+"@types/node@*":
   version "14.10.1"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.10.1.tgz#cc323bad8e8a533d4822f45ce4e5326f36e42177"
   integrity sha512-aYNbO+FZ/3KGeQCEkNhHFRIzBOUgc7QvcVNKXbfnhDkSfwUv91JsQQa10rDgKSTSLkXZ1UIyPe4FJJNVgw1xWQ==
+
+"@types/node@^14.11.1":
+  version "14.11.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.11.1.tgz#56af902ad157e763f9ba63d671c39cda3193c835"
+  integrity sha512-oTQgnd0hblfLsJ6BvJzzSL+Inogp3lq9fGgqRkMB/ziKMgEUaFl801OncOzUmalfzt14N0oPHMK47ipl+wbTIw==
 
 "@types/qs@*":
   version "6.9.4"
@@ -4930,6 +4935,15 @@ terser@^5.3.1:
     source-map "~0.6.1"
     source-map-support "~0.5.12"
 
+terser@^5.3.2:
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/terser/-/terser-5.3.2.tgz#f4bea90eb92945b2a028ceef79181b9bb586e7af"
+  integrity sha512-H67sydwBz5jCUA32ZRL319ULu+Su1cAoZnnc+lXnenGRYWyLE3Scgkt8mNoAsMx0h5kdo758zdoS0LG9rYZXDQ==
+  dependencies:
+    commander "^2.20.0"
+    source-map "~0.6.1"
+    source-map-support "~0.5.12"
+
 text-hex@1.0.x:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/text-hex/-/text-hex-1.0.0.tgz#69dc9c1b17446ee79a92bf5b884bb4b9127506f5"
@@ -5345,10 +5359,10 @@ webpack-sources@^1.4.0, webpack-sources@^1.4.1, webpack-sources@^1.4.3:
     source-list-map "^2.0.0"
     source-map "~0.6.1"
 
-webpack@^4.44.1:
-  version "4.44.1"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.44.1.tgz#17e69fff9f321b8f117d1fda714edfc0b939cc21"
-  integrity sha512-4UOGAohv/VGUNQJstzEywwNxqX417FnjZgZJpJQegddzPmTvph37eBIRbRTfdySXzVtJXLJfbMN3mMYhM6GdmQ==
+webpack@^4.44.2:
+  version "4.44.2"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.44.2.tgz#6bfe2b0af055c8b2d1e90ed2cd9363f841266b72"
+  integrity sha512-6KJVGlCxYdISyurpQ0IPTklv+DULv05rs2hseIXer6D7KrUicRDLFb4IUM1S6LUAKypPM/nSiVSuv8jHu1m3/Q==
   dependencies:
     "@webassemblyjs/ast" "1.9.0"
     "@webassemblyjs/helper-module-context" "1.9.0"

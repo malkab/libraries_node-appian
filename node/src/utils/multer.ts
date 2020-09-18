@@ -30,11 +30,7 @@ export class Multer{
    * Multer
    *
    */
-  get multer(): any {
-
-    return this._multer;
-
-  }
+  get multer(): any { return this._multer; }
 
   /**
    *
