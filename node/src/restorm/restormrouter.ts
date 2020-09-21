@@ -72,7 +72,8 @@ import { StatusCodes } from 'http-status-codes';
  * an Observable.
  *
  * @param baseUrl
- * The base URL to use when defining the entry points of the methods.
+ * The base URL to use when defining the entry points of the methods. Must
+ * **not** end in **\/**.
  *
  * @param keysUrlParameters
  * The name of the parameters to be used in the methods that needs them to

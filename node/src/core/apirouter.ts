@@ -58,14 +58,19 @@ export class ApiRouter {
    *
    * Constructor.
    *
-   * @param __namedParameters     ApiRouter options.
-   * @param log                   **Optional**. A Log object for automatically
-   *                              log HTTP responses via the
-   *                              {@link processResponse} handler.
-   * @param urlBaseRoot           **Optional**. The URL base root. Defaults to
-   *                              **\/**.
-   * @param module                The module name, to be used in errors
-   *                              consistently.
+   * @param __namedParameters
+   * ApiRouter options.
+   *
+   * @param log
+   * **Optional**. A Log object for automatically log HTTP responses via the
+   * {@link processResponse} handler.
+   *
+   * @param urlBaseRoot
+   * **Optional**. The URL base root. Defaults to **\/**. Must not end with
+   * **\/**.
+   *
+   * @param module
+   * The module name, to be used in errors consistently.
    *
    */
   constructor({
