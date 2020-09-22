@@ -54,10 +54,10 @@
     rxjs "^6.6.2"
     uid-generator "^2.0.0"
 
-"@malkab/rxpg@^3.2.1":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@malkab/rxpg/-/rxpg-3.2.1.tgz#552ef9f3845fb6ae625fa7509bf8c59e5935512c"
-  integrity sha512-Xn4A1l/7vBQ1Rk+GBegA67t5jOXOiOM/JzfQyPuW7Avrl+RERJpRZ+r+deF2InHDfg0Tp5yNtDwNxu+jKAQaXQ==
+"@malkab/rxpg@^3.2.2":
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/@malkab/rxpg/-/rxpg-3.2.2.tgz#19f531c98ab0defa6bac6fbfe258eeec2980fb30"
+  integrity sha512-ijzh8jtHDoPt/N2r23zHzAYZs9Ru9oMwUwu1XLr1aQAbwcwkwQfaccKANcnLjCX72F6emIpq17si/ESI0B7faQ==
   dependencies:
     lodash "^4.17.20"
     pg "^8.3.3"
