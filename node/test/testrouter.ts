@@ -608,7 +608,15 @@ export class TestRouter extends ApiRouter {
         // Auth.bearerAuth(this._jwtToken, this._authentication),
         addMetadata(this.module, this.log),
         multerFile.multer.single("image")
-      ]
+      ],
+
+      // This is a custom object initialization method
+      newFunction: (params) => {
+        console.log("D: COMPLEX INIT LOGIC AT newFunction", params);
+        return rx.of(new OrmTest(params));
+      },
+      // Additional params for the newFunction
+      newFunctionAdditionalParams: () => { return { u: 99 } }
     });
 
   }

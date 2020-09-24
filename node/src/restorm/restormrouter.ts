@@ -2,7 +2,9 @@ import * as rx from "rxjs";
 
 import * as rxo from "rxjs/operators";
 
-import { PgOrm } from "@malkab/rxpg";
+import { EORMERRORCODES } from "./eormerrorcodes";
+
+import { OrmError } from "./ormerror";
 
 import { Request, Response, ApiError, IResponsePayload, ApiRouter, addMetadata, processResponse } from "../core/index";
 
@@ -85,6 +87,27 @@ import { StatusCodes } from 'http-status-codes';
  * A binary flag to signal if the POST method will use key URL parameters or
  * not. If not, keys must be included in the POST body.
  *
+ * @param newFunction
+ * This function allows for a customized object T initialization workflow. By
+ * default, this method just calls the new constructor of the type with the
+ * parameters coming from the database, as designed in the provided SQL. The
+ * definition of this custom function allow for the definition of complex,
+ * potentially asynchronous tasks. This function has the prototype:
+ *
+ * ```TypeScript
+ * (params: any) => rx.Observable<T>
+ * ```
+ *
+ * Into this function are injected several parameters to init the object:
+ *
+ * - data from request.body;
+ * - data from request.params;
+ * - any data provided at the newFunctionAdditionalParams, by default {}.
+ *
+ * @param newFunctionAdditionalParams
+ * Any additional params the newFunction may need, provided by a function () =>
+ * any.
+ *
  * @param prefixMiddlewares
  * Array of Express middlewares to execute before the generated entries.
  *
@@ -165,6 +188,8 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     baseUrl = "",
     keysUrlParameters = [ ":id" ],
     keylessPostMethod = true,
+    newFunction = (params: any) => rx.of(new type(params)),
+    newFunctionAdditionalParams = () => {},
     prefixMiddlewares = [ addMetadata(router.module, router.log) ],
     suffixMiddlewares = [ processResponse({}) ],
     badRequestErrorPayload =
@@ -220,6 +245,8 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     baseUrl?: string;
     keysUrlParameters?: string[];
     keylessPostMethod?: boolean;
+    newFunction?: (params: any) => rx.Observable<T>;
+    newFunctionAdditionalParams?: () => any;
     prefixMiddlewares?: any[];
     suffixMiddlewares?: any[];
     badRequestErrorPayload?: ({ error, object, request, response }:
@@ -292,34 +319,52 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
       // The created object from the request.body
       let object: T = <any>undefined;
 
-      try {
-
-        // Try to create the object
-        object = <T>(new type({ ...request.body, ...request.params }));
-
-      } catch(e) {
-
-        // Error creating the object
-        response.appianError = new ApiError({
-          module: module,
-          error: e,
-          httpStatus: StatusCodes.BAD_REQUEST,
-          payload: badRequestErrorPayload(
-            { error: e, request: request, response: response })
-        });
-
-      }
-
-      // Process pipeline
-      response.appianObservable =
-      postMethod$({ object: object, request: request, response: response })
+      // Process pipeline, start by trying to create the object
+      response.appianObservable = rx.of(0)
       .pipe(
 
+        rxo.concatMap((o: any) => {
+
+          // Try to create the object
+          // object = <T>(new type({ ...request.body, ...request.params }));
+
+          try {
+
+            return newFunction(
+              { ...request.body, ...request.params, ...newFunctionAdditionalParams() })
+
+          } catch(e) {
+
+            console.log("D: jjenw2212");
+
+            // Error creating the object
+            throw new Error("error initializing object");
+
+          }
+
+        }),
+
+        // // Process pipeline
+        // response.appianObservable =
+        rxo.concatMap((o: any) => {
+
+          console.log("D: nhnh", o);
+
+          object = o;
+          return postMethod$({ object: object, request: request, response: response })
+
+        }),
+
         // Catch controlled errors
-        rxo.catchError((e: any) => {
+        rxo.catchError((e: OrmError) => {
+
+          console.log("D: 12121212", e);
+
+          // Error initializing object
+          // if (e.message === )
 
           // Duplicated keys
-          if (e.code === PgOrm.EORMERRORCODES.DUPLICATED) {
+          if (e.code === EORMERRORCODES.DUPLICATED) {
 
             throw new ApiError({
               module: module,
@@ -332,7 +377,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           }
 
           // Foreign key violation
-          if (e.code === PgOrm.EORMERRORCODES.FOREIGN_KEY_VIOLATION) {
+          if (e.code === EORMERRORCODES.FOREIGN_KEY_VIOLATION) {
 
             throw new ApiError({
               module: module,
@@ -345,7 +390,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           }
 
           // Invalid parameters provided by the user
-          if (e.code === PgOrm.EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
+          if (e.code === EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
 
             throw new ApiError({
               module: module,
@@ -356,6 +401,8 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
             });
 
           }
+
+          console.log("D: jekwndjw");
 
           // Any other error: internal error
           throw new ApiError({
@@ -401,7 +448,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
         rxo.catchError((e: any) => {
 
           // User commited an error with data types
-          if (e.code === PgOrm.EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
+          if (e.code === EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
 
             throw new ApiError({
               module: module,
@@ -414,7 +461,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           }
 
           // Requested object not found
-          if (e.code === PgOrm.EORMERRORCODES.NOT_FOUND) {
+          if (e.code === EORMERRORCODES.NOT_FOUND) {
 
             throw new ApiError({
               module: module,
@@ -484,7 +531,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
         rxo.catchError((e: any) => {
 
           // User made a mistake with data types
-          if (e.code === PgOrm.EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
+          if (e.code === EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
 
             throw new ApiError({
               module: module,
@@ -497,7 +544,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           }
 
           // Foreign key violation
-          if (e.code === PgOrm.EORMERRORCODES.FOREIGN_KEY_VIOLATION) {
+          if (e.code === EORMERRORCODES.FOREIGN_KEY_VIOLATION) {
 
             throw new ApiError({
               module: module,
@@ -510,7 +557,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           }
 
           // The object does not exists
-          if (e.code === PgOrm.EORMERRORCODES.NOT_FOUND) {
+          if (e.code === EORMERRORCODES.NOT_FOUND) {
 
             throw new ApiError({
               module: module,
@@ -579,7 +626,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
         rxo.catchError((e: any) => {
 
           // The user made a mistake with data types
-          if (e.code === PgOrm.EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
+          if (e.code === EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
 
             throw new ApiError({
               module: module,
@@ -592,7 +639,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           }
 
           // The object does not exists
-          if (e.code === PgOrm.EORMERRORCODES.NOT_FOUND) {
+          if (e.code === EORMERRORCODES.NOT_FOUND) {
 
             throw new ApiError({
               module: module,
@@ -628,7 +675,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
       next();
 
     },
-    ...patchFinalSuffixMiddlewares
+    ...deleteFinalSuffixMiddlewares
   );
 
 }

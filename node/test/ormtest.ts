@@ -43,17 +43,24 @@ export class OrmTest implements PgOrm.IPgOrm<OrmTest>, RestOrm.IRestOrm<OrmTest>
       a,
       b,
       c,
-      d
+      d,
+      u
     }: {
       a: number;
       b: number;
       c: string;
       d: number;
+      u?: number;
   }) {
+
+    throw new Error("PORQUE YO LO VALGO");
 
     // Only the id is set here, at construction time
     this._a = a;
     this._b = b;
+
+    // Additional parameter
+    console.log("D: COMPLEX LOGIC AT CONSTRUCTOR", u);
 
     // Call the patch$ function for everything else
     this.patch$({ c: c, d: d });
