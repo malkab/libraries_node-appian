@@ -54,11 +54,12 @@
     rxjs "^6.6.2"
     uid-generator "^2.0.0"
 
-"@malkab/rxpg@^3.3.1":
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/@malkab/rxpg/-/rxpg-3.3.1.tgz#cf37034ad0513a37181dd4be3034ca71defa0f53"
-  integrity sha512-Fhql8X6rZuB5R/C2gl8VHINEi+en7KkR3cUzfzQCsaNjEzmBjWcT5ZVSjV14JvQWXUrL6Kgn7TYa0R297BYNvw==
+"@malkab/rxpg@^3.9.0":
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/@malkab/rxpg/-/rxpg-3.9.0.tgz#9e771b0ca48ac61fc77d389f5f8cf332158fca97"
+  integrity sha512-ZnbJW5zwYpZbMBBRAHx3Ke0bIi4j3Z/Bvir3+cEgRfi1mNtGuVS29kgkmAygLakSZEUJtf3BMHlOSpmBHf52fw==
   dependencies:
+    "@malkab/ts-utils" "^4.0.0"
     lodash "^4.17.20"
     pg "^8.3.3"
     pg-native "^3.0.0"
@@ -82,10 +83,10 @@
     moment "^2.24.0"
     node-forge "^0.9.1"
 
-"@malkab/ts-utils@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@malkab/ts-utils/-/ts-utils-3.0.0.tgz#b2b8cd54d62b7733cfdacbbc363912af3a9163f4"
-  integrity sha512-8JOoJmaOR4kItSjjwbfml8UfZHWM0SUucPNVM0uPH1R6F889dGVLGapJic63Qz4yt2XT8Y3cOq1/XrMCqkfvAQ==
+"@malkab/ts-utils@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@malkab/ts-utils/-/ts-utils-4.0.0.tgz#c43144d984994a7a649190fb3081d94ef584c7dc"
+  integrity sha512-LcHZ0RumFr5OMeUFKfoiJ71q32oDUMdsyhJ4qbFTa+H/WJpBKS6/+3XQ5S1rbYmwn6oatN7khBI99ZsBc8BQyQ==
   dependencies:
     lodash "^4.17.20"
     moment "^2.24.0"

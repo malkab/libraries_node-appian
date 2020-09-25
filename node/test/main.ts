@@ -157,10 +157,10 @@ new HttpServer({
 // )
 // .subscribe(
 
-//   (o: any) => { console.log("D: next", o) },
+//   (o: any) => { console.log("next", o) },
 
-//   (e: any) => { console.log("D: error", e) },
+//   (e: any) => { console.log("error", e) },
 
-//   () => { console.log("D: completed") }
+//   () => { console.log("completed") }
 
 // )

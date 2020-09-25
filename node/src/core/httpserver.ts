@@ -414,6 +414,8 @@ any {
   // Log, if log
   if (log !== undefined) {
 
+    console.log("D: jeje", error);
+
     log.logError({
       message: error.error.message,
       methodName: httpRequest.route.path,

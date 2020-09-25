@@ -2,15 +2,15 @@ import * as rx from "rxjs";
 
 import * as rxo from "rxjs/operators";
 
-import { EORMERRORCODES } from "./eormerrorcodes";
-
-import { OrmError } from "./ormerror";
+import { OrmError } from "@malkab/ts-utils";
 
 import { Request, Response, ApiError, IResponsePayload, ApiRouter, addMetadata, processResponse } from "../core/index";
 
 import { IRestOrm } from "./irestorm";
 
 import { StatusCodes } from 'http-status-codes';
+
+import { NodeLogger } from "@malkab/node-logger";
 
 /**
  *
@@ -185,6 +185,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     getMethod$,
     patchMethod$,
     deleteMethod$,
+    log,
     baseUrl = "",
     keysUrlParameters = [ ":id" ],
     keylessPostMethod = true,
@@ -242,6 +243,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     deleteMethod$: ({ object, request, response }:
       { object: T, request?: Request, response?: Response }) =>
       rx.Observable<any>;
+    log?: NodeLogger;
     baseUrl?: string;
     keysUrlParameters?: string[];
     keylessPostMethod?: boolean;
@@ -325,30 +327,41 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
 
         rxo.concatMap((o: any) => {
 
-          // Try to create the object
-          // object = <T>(new type({ ...request.body, ...request.params }));
-
           try {
 
             return newFunction(
               { ...request.body, ...request.params, ...newFunctionAdditionalParams() })
 
-          } catch(e) {
+          } catch(e: any) {
 
-            console.log("D: jjenw2212");
+            // If log provided, log the init error
+            if (log) {
+
+              console.log("D: Jeeeee", e);
+
+              log.logError({
+                message: "error initializing object",
+                methodName: "defaultRouterPost",
+                moduleName: module,
+                payload: {
+                  error: e.message
+                }
+              })
+
+            }
 
             // Error creating the object
-            throw new Error("error initializing object");
+            throw new OrmError.OrmError({
+              code: OrmError.EORMERRORCODES.ERROR_INSTANTIATING_OBJECT,
+              error: e,
+              message: "error initializing object"
+            })
 
           }
 
         }),
 
-        // // Process pipeline
-        // response.appianObservable =
         rxo.concatMap((o: any) => {
-
-          console.log("D: nhnh", o);
 
           object = o;
           return postMethod$({ object: object, request: request, response: response })
@@ -356,15 +369,10 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
         }),
 
         // Catch controlled errors
-        rxo.catchError((e: OrmError) => {
-
-          console.log("D: 12121212", e);
-
-          // Error initializing object
-          // if (e.message === )
+        rxo.catchError((e: OrmError.OrmError) => {
 
           // Duplicated keys
-          if (e.code === EORMERRORCODES.DUPLICATED) {
+          if (e.code === OrmError.EORMERRORCODES.DUPLICATED) {
 
             throw new ApiError({
               module: module,
@@ -377,11 +385,11 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           }
 
           // Foreign key violation
-          if (e.code === EORMERRORCODES.FOREIGN_KEY_VIOLATION) {
+          if (e.code === OrmError.EORMERRORCODES.UNMET_DEPENDENCY) {
 
             throw new ApiError({
               module: module,
-              error: new Error("foreign key violation"),
+              error: new Error("unmet object dependency"),
               httpStatus: StatusCodes.CONFLICT,
               payload: foreignKeyViolationErrorPayload(
                 { error: e, object: object, request: request, response: response })
@@ -390,19 +398,20 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           }
 
           // Invalid parameters provided by the user
-          if (e.code === EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
+          if (
+            e.code === OrmError.EORMERRORCODES.INVALID_OBJECT_PARAMETERS ||
+            e.code === OrmError.EORMERRORCODES.ERROR_INSTANTIATING_OBJECT
+          ) {
 
             throw new ApiError({
               module: module,
-              error: new Error("bad request"),
+              error: e.error,
               httpStatus: StatusCodes.BAD_REQUEST,
               payload: badRequestErrorPayload(
                 { error: e, object: object, request: request, response: response })
             });
 
           }
-
-          console.log("D: jekwndjw");
 
           // Any other error: internal error
           throw new ApiError({
@@ -447,8 +456,35 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
 
         rxo.catchError((e: any) => {
 
+          // The data coming from the database made the initialization fail
+          if (e.code === OrmError.EORMERRORCODES.ERROR_INSTANTIATING_OBJECT) {
+
+            // If log provided, log the init error
+            if (log) {
+
+              log.logError({
+                message: "error initializing object",
+                methodName: "defaultRouterPost",
+                moduleName: module,
+                payload: {
+                  error: e.error.message
+                }
+              })
+
+            }
+
+            throw new ApiError({
+              module: module,
+              error: e,
+              httpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
+              payload: internalErrorPayload(
+                { error: e, request: request, response: response })
+            });
+
+          }
+
           // User commited an error with data types
-          if (e.code === EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
+          if (e.code === OrmError.EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
 
             throw new ApiError({
               module: module,
@@ -461,7 +497,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           }
 
           // Requested object not found
-          if (e.code === EORMERRORCODES.NOT_FOUND) {
+          if (e.code === OrmError.EORMERRORCODES.NOT_FOUND) {
 
             throw new ApiError({
               module: module,
@@ -531,7 +567,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
         rxo.catchError((e: any) => {
 
           // User made a mistake with data types
-          if (e.code === EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
+          if (e.code === OrmError.EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
 
             throw new ApiError({
               module: module,
@@ -544,11 +580,11 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           }
 
           // Foreign key violation
-          if (e.code === EORMERRORCODES.FOREIGN_KEY_VIOLATION) {
+          if (e.code === OrmError.EORMERRORCODES.UNMET_DEPENDENCY) {
 
             throw new ApiError({
               module: module,
-              error: new Error("foreign key violation"),
+              error: new Error("unmet object dependency"),
               httpStatus: StatusCodes.CONFLICT,
               payload: duplicatedErrorPayload(
                 { error: e, object: object, request: request, response: response })
@@ -557,7 +593,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           }
 
           // The object does not exists
-          if (e.code === EORMERRORCODES.NOT_FOUND) {
+          if (e.code === OrmError.EORMERRORCODES.NOT_FOUND) {
 
             throw new ApiError({
               module: module,
@@ -626,7 +662,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
         rxo.catchError((e: any) => {
 
           // The user made a mistake with data types
-          if (e.code === EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
+          if (e.code === OrmError.EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
 
             throw new ApiError({
               module: module,
@@ -639,7 +675,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           }
 
           // The object does not exists
-          if (e.code === EORMERRORCODES.NOT_FOUND) {
+          if (e.code === OrmError.EORMERRORCODES.NOT_FOUND) {
 
             throw new ApiError({
               module: module,

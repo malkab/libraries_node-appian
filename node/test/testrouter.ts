@@ -575,8 +575,11 @@ export class TestRouter extends ApiRouter {
       baseUrl: "/orm",
       keysUrlParameters: [ ":a", ":b" ],
       keylessPostMethod: false,
+      log: this._log,
+
       badRequestErrorPayload: ({ error: e }) =>
-        { return { error: "bad request", e: e } },
+        { return { error: e } },
+
       duplicatedErrorPayload: ({ error: e }) =>
         { return { message: "CACA" } },
       internalErrorPayload: ({ error: e }) =>
@@ -591,6 +594,7 @@ export class TestRouter extends ApiRouter {
         { return <IResponsePayload>{ payload: { a: o.a, b: o.b, ee44: o.c+o.d }}},
       deleteIResponsePayload: ({ object: o }) =>
         { return <IResponsePayload>{ payload: { a: o.a, b: o.b, ehhe44: o.c+o.d }}},
+
       prefixMiddlewares: [
         // Auth.bearerAuth(this._jwtToken, this._authentication),
         addMetadata(this.module, this.log)
@@ -612,7 +616,7 @@ export class TestRouter extends ApiRouter {
 
       // This is a custom object initialization method
       newFunction: (params) => {
-        console.log("D: COMPLEX INIT LOGIC AT newFunction", params);
+        console.log("COMPLEX INIT LOGIC AT newFunction", params);
         return rx.of(new OrmTest(params));
       },
       // Additional params for the newFunction
