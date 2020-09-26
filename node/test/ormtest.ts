@@ -53,7 +53,7 @@ export class OrmTest implements PgOrm.IPgOrm<OrmTest>, RestOrm.IRestOrm<OrmTest>
       u?: number;
   }) {
 
-    if (a > 10 ) throw new Error("PORQUE YO LO VALGO");
+    if (a > 10 ) throw new Error("a can't be higher that 10");
 
     // Only the id is set here, at construction time
     this._a = a;
@@ -67,20 +67,17 @@ export class OrmTest implements PgOrm.IPgOrm<OrmTest>, RestOrm.IRestOrm<OrmTest>
 
     // Create ORM methods automatically
     PgOrm.generateDefaultPgOrmMethods(this, {
-      restApiErrorMapping: true,
-      methods: {
-        pgInsert$: {
-          sql: "insert into dualkeyobjects values($1, $2, $3, $4);",
-          params: () => [ this.a, this.b, this.c, this.d ]
-        },
-        pgUpdate$: {
-          sql: "update dualkeyobjects set c = $1, d = $2 where a = $3 and b = $4;",
-          params: () => [ this.c, this.d, this.a, this.b ]
-        },
-        pgDelete$: {
-          sql: "delete from dualkeyobjects where a = $1 and b = $2;",
-          params: () => [ this.a, this.b ]
-        }
+      pgInsert$: {
+        sql: "insert into dualkeyobjects values($1, $2, $3, $4) returning *;",
+        params: () => [ this.a, this.b, this.c, this.d ]
+      },
+      pgUpdate$: {
+        sql: "update dualkeyobjects set c = $1, d = $2 where a = $3 and b = $4 returning *;",
+        params: () => [ this.c, this.d, this.a, this.b ]
+      },
+      pgDelete$: {
+        sql: "delete from dualkeyobjects where a = $1 and b = $2 returning *;",
+        params: () => [ this.a, this.b ]
       }
     })
 

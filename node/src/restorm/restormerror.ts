@@ -7,7 +7,6 @@ import { AppianExpectedError } from '../core/appianexpectederror';
  *
  */
 export enum ERESTORMERRORCODES {
-
   /**
    *
    * The reference for a newly created object is duplicated at the persistence
@@ -27,9 +26,7 @@ export enum ERESTORMERRORCODES {
    *
    */
   INTERNAL_ERROR = "INTERNAL_ERROR"
-
 }
-
 
 /**
  *
@@ -43,80 +40,65 @@ export class RestOrmError extends AppianExpectedError {
    * The error code.
    *
    */
-  get code(): string { return this._code; }
-
-  private _code: ERESTORMERRORCODES;
+  get restOrmCode(): string { return this._restOrmCode; }
+  private _restOrmCode: ERESTORMERRORCODES;
 
   /**
    *
    * The error code text.
    *
    */
-  get codeText(): string { return ERESTORMERRORCODES[this._code]; }
+  get restOrmCodeText(): string { return ERESTORMERRORCODES[this._restOrmCode]; }
 
   /**
    *
    * Constructor.
    *
-   * @param __namedParameters Error options.
-   * @param module            The module where the error is thrown in.
-   * @param payload           An optional payload for greater detail.
-   * @param logPayload        An optional payload for the log. This should not
-   *                          be too long. Equals the payload by default.
-   * @param error             Any other error being thrown and intercepted by
-   *                          this ApiError.
-   * @param code              A member of EPERSISTENCEERRORCODES describing the
-   *                          nature of the error.
+   * @param __namedParameters
+   * Error options.
+   *
+   * @param module
+   * The module where the error is thrown in.
+   *
+   * @param payload
+   * An optional payload for greater detail.
+   *
+   * @param logPayload
+   * An optional payload for the log. This should not be too long. Equals the
+   * payload by default.
+   *
+   * @param error
+   * Any other error being thrown and intercepted by this ApiError.
+   *
+   * @param code
+   * A member of EPERSISTENCEERRORCODES describing the nature of the error.
    *
    */
   constructor({
-      module,
-      payload = null,
-      logPayload = payload,
       error,
-      code = ERESTORMERRORCODES.INTERNAL_ERROR
+      restOrmModule,
+      restOrmPayload,
+      restOrmLogPayload = restOrmPayload,
+      restOrmCode = ERESTORMERRORCODES.INTERNAL_ERROR
     }: {
-      /**
-       *
-       * The module where the error is thrown in.
-       *
-       */
-      module?: string;
-      /**
-       *
-       * An optional payload for greater detail.
-       *
-       */
-      payload?: any;
-      /**
-       *
-       * An optional payload for the log. This should not
-       * be too long. Equals the payload by default.
-       */
-      logPayload?: any;
-      /**
-       *
-       * Any other error being thrown and intercepted by this ApiError.
-       *
-       */
-      error?: Error;
-      /**
-       *
-       * A member of EPERSISTENCEERRORCODES describing the nature of the error.
-       *
-       */
-      code: ERESTORMERRORCODES;
+      error: Error;
+      restOrmModule?: string;
+      restOrmPayload?: any;
+      restOrmLogPayload?: any;
+      restOrmCode: ERESTORMERRORCODES;
     }
   ) {
 
     super({
       error: error,
-      logPayload: logPayload,
-      module: module,
-      payload: payload
+      appianExpectedErrorLogPayload: restOrmLogPayload,
+      appianExpectedErrorModule: restOrmModule,
+      appianExpectedErrorPayload: restOrmPayload
     })
 
-    this._code = code;
+    Object.assign(this, error);
+
+    this._restOrmCode = restOrmCode;
 
   }
 

@@ -2,6 +2,7 @@
 
 This is the boilerplate to create Node libraries.
 
+
 ## Configuration Steps
 
 Follow:
@@ -12,15 +13,18 @@ Follow:
 
 - configure **package.json** and make initial install.
 
+
 ## Publishing Workflow
 
 Steps:
 
 - update package **README.md** and the description at **package.json**, if applicable;
 
-- test **npm run build** or **npm run build-with-docs** (better the last one);
+- test **npm run build** or **npm run build-with-docs** (better the last one, copy resulting docs to mlk-docs);
 
 - test **npm pack**;
+
+- review changes with Git to get a clear idea of changes in the current version, but don't commit yet;
 
 - test **npm publish**, changing version with **npm version** if needed;
 

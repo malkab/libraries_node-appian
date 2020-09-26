@@ -1,3 +1,5 @@
+import { NodeLogger } from '@malkab/node-logger';
+
 import { TsUtilsFormattedOutput } from "@malkab/ts-utils";
 
 import * as bodyParser from "body-parser";
@@ -6,7 +8,7 @@ import * as cookieParser from "cookie-parser";
 
 import * as cors from "cors";
 
-import express from "express";
+import express, { Request, Response } from "express";
 
 import * as fs from "fs";
 
@@ -14,25 +16,21 @@ import * as http from "http";
 
 import { StatusCodes } from "http-status-codes";
 
+import lodash from "lodash";
+
 import * as morgan from "morgan";
+
+import { AddressInfo } from 'net';
 
 import { ApiError } from "./apierror";
 
 import { ApiRouter } from "./apirouter";
 
-import { IStatic } from "./istatic";
-
-import { NodeLogger } from '@malkab/node-logger';
-
-import { Response, Request } from "express";
-
 import { ApiSuccess } from './apisuccess';
 
 import { IResponsePayload } from './iresponsepayload';
 
-import * as lodash from "lodash";
-
-import { AddressInfo } from 'net';
+import { IStatic } from "./istatic";
 
 /**
  *
@@ -389,18 +387,12 @@ any {
   let res: any = {
     error: {
       error: error.message,
-      ...error.payload
+      ...error.appianExpectedErrorPayload
     },
     url: httpRequest.url,
     path: httpRequest.route.path,
     body: httpRequest.body
   };
-
-  // If the error code is 500, hide the error and substitute
-  // it for the user
-  if (error.httpStatus === StatusCodes.INTERNAL_SERVER_ERROR) {
-    res.error = unexpectedErrorMessage;
-  }
 
   // Drop payload if requested
   if (doNotEchoErrorPayload) {
@@ -414,18 +406,17 @@ any {
   // Log, if log
   if (log !== undefined) {
 
-    console.log("D: jeje", error);
-
     log.logError({
-      message: error.error.message,
+      message: error.message,
       methodName: httpRequest.route.path,
       moduleName: httpResponse.appianModule,
-      payload: { error: error.logPayload, httpStatus: error.httpStatus }
+      payload: { error: error.appianExpectedErrorLogPayload,
+        httpStatus: error.appianErrorHttpStatus }
     })
 
   }
 
-  return httpResponse.status(error.httpStatus).json(res);
+  return httpResponse.status(error.appianErrorHttpStatus).json(res);
 
 }
 
@@ -640,13 +631,17 @@ export function errorFactory(
 
   // Check if parameter is an ApiError
   if (!(<ApiError>error).isAppianExpectedError) {
+
     return new ApiError({
-      module: module,
       error: error,
-      httpStatus: StatusCodes.INTERNAL_SERVER_ERROR
+      appianErrorHttpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
+      appianErrorModule: module
     })
+
   } else {
+
     return <ApiError>error;
+
   }
 
 }
@@ -665,9 +660,7 @@ export function addMetadata(module: string, log?: NodeLogger):
   return (req: Request, res: Response, next: any) => {
 
     res.appianModule = module;
-
     res.appianLog = log;
-
     next();
 
   }

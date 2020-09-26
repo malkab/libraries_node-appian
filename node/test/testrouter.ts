@@ -575,17 +575,16 @@ export class TestRouter extends ApiRouter {
       baseUrl: "/orm",
       keysUrlParameters: [ ":a", ":b" ],
       keylessPostMethod: false,
-      log: this._log,
 
       badRequestErrorPayload: ({ error: e }) =>
-        { return { error: e } },
-
+        { return { error: e.message, type: e.OrmErrorCode } },
       duplicatedErrorPayload: ({ error: e }) =>
         { return { message: "CACA" } },
       internalErrorPayload: ({ error: e }) =>
         { return { error: "internal error", e: e } },
       notFoundErrorPayload: ({ error: e}) =>
         { return { error: "NOT FOUND" } },
+
       postIResponsePayload: ({ object: o }) =>
         { return <IResponsePayload>{ payload: { a: o.a, b: o.b } } },
       getIResponsePayload: ({ object: o }) =>
@@ -595,14 +594,14 @@ export class TestRouter extends ApiRouter {
       deleteIResponsePayload: ({ object: o }) =>
         { return <IResponsePayload>{ payload: { a: o.a, b: o.b, ehhe44: o.c+o.d }}},
 
-      prefixMiddlewares: [
-        // Auth.bearerAuth(this._jwtToken, this._authentication),
-        addMetadata(this.module, this.log)
-      ],
-      suffixMiddlewares: [
-        processResponse({ verbose: true,
-          unexpectedErrorMessage: "Internal error occured, contact support" })
-      ],
+      // prefixMiddlewares: [
+      //   // Auth.bearerAuth(this._jwtToken, this._authentication),
+      //   addMetadata(this.module, this.log)
+      // ],
+      // suffixMiddlewares: [
+      //   processResponse({ verbose: true,
+      //     unexpectedErrorMessage: "Internal error occured, contact support" })
+      // ],
       postPrefixMiddlewares: [
         // Auth.bearerAuth(this._jwtToken, this._authentication),
         addMetadata(this.module, this.log),

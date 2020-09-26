@@ -32,10 +32,10 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
-"@malkab/node-logger@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@malkab/node-logger/-/node-logger-1.0.1.tgz#c96896f6a789a2dbf6e314c595aad9e7deaef067"
-  integrity sha512-ZHk1mu7eZVisbpG2p74BbOFbO8EnPeJuFB8TF/z8qeFJnmKzbQV5LeBqxXNmvcDKGjAJpjHg4+GxsvyJOEMrzg==
+"@malkab/node-logger@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@malkab/node-logger/-/node-logger-1.1.2.tgz#ec119ba0f43ac5cada4bfc43e7ff7991c10828b3"
+  integrity sha512-+pRUxJzYymP3Y9C8JG0K4HCPkVTasOGvZMrV68vePVOUuhCI1zMg3XL2yGuDihUUEnCXvcsNAQ5fH43XjfhKMg==
   dependencies:
     lodash "^4.17.20"
     winston "^3.3.3"
@@ -54,12 +54,12 @@
     rxjs "^6.6.2"
     uid-generator "^2.0.0"
 
-"@malkab/rxpg@^3.9.0":
-  version "3.9.0"
-  resolved "https://registry.yarnpkg.com/@malkab/rxpg/-/rxpg-3.9.0.tgz#9e771b0ca48ac61fc77d389f5f8cf332158fca97"
-  integrity sha512-ZnbJW5zwYpZbMBBRAHx3Ke0bIi4j3Z/Bvir3+cEgRfi1mNtGuVS29kgkmAygLakSZEUJtf3BMHlOSpmBHf52fw==
+"@malkab/rxpg@^4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@malkab/rxpg/-/rxpg-4.1.1.tgz#6194197980653af81b70b522e91da3abe55fbf08"
+  integrity sha512-1osjJqBDeF8JBRSZVVNyjEJSqsDBpL/7csoHJv71RmroRYmqJHOYXrcY42SbFIOg1+6SRQ+BNY0SEjsottCcSA==
   dependencies:
-    "@malkab/ts-utils" "^4.0.0"
+    "@malkab/ts-utils" "^4.1.1"
     lodash "^4.17.20"
     pg "^8.3.3"
     pg-native "^3.0.0"
@@ -83,10 +83,10 @@
     moment "^2.24.0"
     node-forge "^0.9.1"
 
-"@malkab/ts-utils@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@malkab/ts-utils/-/ts-utils-4.0.0.tgz#c43144d984994a7a649190fb3081d94ef584c7dc"
-  integrity sha512-LcHZ0RumFr5OMeUFKfoiJ71q32oDUMdsyhJ4qbFTa+H/WJpBKS6/+3XQ5S1rbYmwn6oatN7khBI99ZsBc8BQyQ==
+"@malkab/ts-utils@^4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@malkab/ts-utils/-/ts-utils-4.1.1.tgz#82b812900a643b4130fa3ccbf10fc72a05a38a7b"
+  integrity sha512-jhSxNtBrgQwE6beAEEBs5flyImVWzvBPOv1y5HqMSiY+mKXmLriWSt9IfyHrgMm3wNOF8U3GMA8Ilw/86T8KBg==
   dependencies:
     lodash "^4.17.20"
     moment "^2.24.0"

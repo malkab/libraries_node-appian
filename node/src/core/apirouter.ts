@@ -19,9 +19,8 @@ export class ApiRouter {
    * The API root the routes of this module attach to.
    *
    */
-  protected _urlBaseRoot: string;
-
   get urlBaseRoot(): string { return this._urlBaseRoot; }
+  protected _urlBaseRoot: string;
 
   /**
    *
@@ -35,24 +34,17 @@ export class ApiRouter {
    * Info log method.
    *
    */
-  protected _log: NodeLogger | undefined;
-
-  /**
-   *
-   * Info log method.
-   *
-   */
   get log(): NodeLogger | undefined {
     return this._log ? this._log : undefined; }
+  protected _log: NodeLogger | undefined;
 
   /**
    *
    * The module name, for errors.
    *
    */
-  protected _module: string;
-
   get module(): string { return this._module; }
+  protected _module: string;
 
   /**
    *

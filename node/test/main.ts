@@ -50,7 +50,6 @@ const log: NodeLogger = new NodeLogger({});
  * method processResponse.
  *
  */
-
 log.logDebug({
   methodName: "logDebug",
   moduleName: "main",
