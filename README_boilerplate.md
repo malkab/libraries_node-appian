@@ -20,6 +20,8 @@ Steps:
 
 - update package **README.md** and the description at **package.json**, if applicable;
 
+- check for **console.log("D:** left behind;
+
 - test **npm run build** or **npm run build-with-docs** (better the last one, copy resulting docs to mlk-docs);
 
 - test **npm pack**;

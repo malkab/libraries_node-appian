@@ -567,6 +567,7 @@ export class TestRouter extends ApiRouter {
       getMethod$: ({ request: req }) => OrmTest.get$(this._pgCon, +req.params.a, +req.params.b),
       patchMethod$: ({ request: req, object: o }) => {
         o.c = req.file.filename;
+        o.d = +req.body.d;
         return o.pgUpdate$(this._pgCon)
       },
       deleteMethod$: ({ object: o }) => o.pgDelete$(this._pgCon),
@@ -576,23 +577,23 @@ export class TestRouter extends ApiRouter {
       keysUrlParameters: [ ":a", ":b" ],
       keylessPostMethod: false,
 
-      badRequestErrorPayload: ({ error: e }) =>
-        { return { error: e.message, type: e.OrmErrorCode } },
-      duplicatedErrorPayload: ({ error: e }) =>
-        { return { message: "CACA" } },
-      internalErrorPayload: ({ error: e }) =>
-        { return { error: "internal error", e: e } },
-      notFoundErrorPayload: ({ error: e}) =>
-        { return { error: "NOT FOUND" } },
+      // badRequestErrorPayload: ({ error: e }) =>
+      //   { return { error: e.message, type: e.OrmErrorCode } },
+      // duplicatedErrorPayload: ({ error: e }) =>
+      //   { return { message: "CACA" } },
+      // internalErrorPayload: ({ error: e }) =>
+      //   { return { error: "internal error", e: e } },
+      // notFoundErrorPayload: ({ error: e}) =>
+      //   { return { error: "NOT FOUND" } },
 
-      postIResponsePayload: ({ object: o }) =>
-        { return <IResponsePayload>{ payload: { a: o.a, b: o.b } } },
-      getIResponsePayload: ({ object: o }) =>
-        { return <IResponsePayload>{ payload: { a: o.a, b: o.b, ee: o.c+o.d }}},
-      patchIResponsePayload: ({ object: o }) =>
-        { return <IResponsePayload>{ payload: { a: o.a, b: o.b, ee44: o.c+o.d }}},
-      deleteIResponsePayload: ({ object: o }) =>
-        { return <IResponsePayload>{ payload: { a: o.a, b: o.b, ehhe44: o.c+o.d }}},
+      // postIResponsePayload: ({ object: o }) =>
+      //   { return <IResponsePayload>{ payload: { a: o.a, b: o.b } } },
+      // getIResponsePayload: ({ object: o }) =>
+      //   { return <IResponsePayload>{ payload: { a: o.a, b: o.b, ee: o.c+o.d }}},
+      // patchIResponsePayload: ({ object: o }) =>
+      //   { return <IResponsePayload>{ payload: { a: o.a, b: o.b, ee44: o.c+o.d }}},
+      // deleteIResponsePayload: ({ object: o }) =>
+      //   { return <IResponsePayload>{ payload: { a: o.a, b: o.b, ehhe44: o.c+o.d }}},
 
       // prefixMiddlewares: [
       //   // Auth.bearerAuth(this._jwtToken, this._authentication),

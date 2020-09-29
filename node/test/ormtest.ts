@@ -1,7 +1,5 @@
 import { RxPg, PgOrm } from "@malkab/rxpg";
 
-import { RestOrm } from "../src/index";
-
 import * as rx from "rxjs";
 
 /**
@@ -10,7 +8,7 @@ import * as rx from "rxjs";
  *
  */
 
-export class OrmTest implements PgOrm.IPgOrm<OrmTest>, RestOrm.IRestOrm<OrmTest> {
+export class OrmTest implements PgOrm.IPgOrm<OrmTest> {
 
   // Placeholder for the required functions at the IPgPersistence interface
   // These will be created automatically by a helper at construction time
@@ -28,6 +26,7 @@ export class OrmTest implements PgOrm.IPgOrm<OrmTest>, RestOrm.IRestOrm<OrmTest>
   get c(): string { return this._c }
   set c(c: string) { this._c = c }
   get d(): number { return this._d }
+  set d(d: number) { this._d = d }
 
   private _a: number;
   private _b: number;
@@ -58,12 +57,11 @@ export class OrmTest implements PgOrm.IPgOrm<OrmTest>, RestOrm.IRestOrm<OrmTest>
     // Only the id is set here, at construction time
     this._a = a;
     this._b = b;
+    this._c = c;
+    this._d = d;
 
     // Additional parameter
     console.log("COMPLEX LOGIC AT CONSTRUCTOR", u);
-
-    // Call the patch$ function for everything else
-    this.patch$({ c: c, d: d });
 
     // Create ORM methods automatically
     PgOrm.generateDefaultPgOrmMethods(this, {
@@ -100,23 +98,6 @@ export class OrmTest implements PgOrm.IPgOrm<OrmTest>, RestOrm.IRestOrm<OrmTest>
       params: () => [ a, b ],
       type: OrmTest
     })
-
-  }
-
-  /**
-   *
-   * The patch$ function.
-   *
-   */
-  public patch$({
-      c, d
-    }: {
-      c: string; d: number;
-  }): rx.Observable<OrmTest> {
-
-    this._c = c;
-    this._d = d;
-    return rx.of(this);
 
   }
 

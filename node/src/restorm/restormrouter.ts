@@ -6,8 +6,6 @@ import { OrmError } from "@malkab/ts-utils";
 
 import { Request, Response, ApiError, IResponsePayload, ApiRouter, addMetadata, processResponse } from "../core/index";
 
-import { IRestOrm } from "./irestorm";
-
 import { StatusCodes } from 'http-status-codes';
 
 // DOCUMENTATION: document further these methods
@@ -190,7 +188,7 @@ import { StatusCodes } from 'http-status-codes';
  * **suffixMiddlewares** will be used.
  *
  */
-export function generateDefaultRestRouters<T extends IRestOrm<T>>({
+export function generateDefaultRestRouters<T>({
     module,
     router,
     type,
@@ -553,7 +551,6 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
           rxo.concatMap((o: T) => {
 
             object = o;
-            object.patch$({ ...request.params, ...request.body });
             return patchMethod$({ object: object, request: request, response: response })
 
           }),
