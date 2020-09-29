@@ -10,7 +10,7 @@ import { IRestOrm } from "./irestorm";
 
 import { StatusCodes } from 'http-status-codes';
 
-import { NodeLogger } from "@malkab/node-logger";
+// DOCUMENTATION: document further these methods
 
 /**
  *
@@ -51,27 +51,40 @@ import { NodeLogger } from "@malkab/node-logger";
  * The class of the object to persist.
  *
  * @param postMethod$
- * The function defining the post operation of the object. Gets the object
- * parameters in the request body and tries to construct an object with them. If
- * successfull, it is written at the persistence using the provided method. The
- * REST API method generated can be with key parameters (/whatever/key1/key2) or
- * without them, providing the user the keys directly at the request body.
- * Returns an Observable.
+ * The optional function defining the post operation of the object. Gets the
+ * object parameters in the request body and tries to construct an object with
+ * them. If successfull, it is written at the persistence using the provided
+ * method. The REST API method generated can be with key parameters
+ * (/whatever/key1/key2) or without them, providing the user the keys directly
+ * at the request body. Returns an Observable. If this method is undefined, the
+ * RestORM won't be able to process the default POST method.
  *
  * @param getMethod$
- * The function defining the get operation of the object. Gets the object
- * referenced at the REST method by the key and returns an Observable with the
- * retrieved object.
+ * The optional function defining the get operation of the object. Gets the
+ * object referenced at the REST method by the key and returns an Observable
+ * with the retrieved object. If this method is undefined, the RestORM won't be
+ * able to process the default GET method. Since this method is needed for the
+ * patchMethod$ and the deleteMethod$, the getMethod$ uses the exposeGetMethod
+ * flag to signal if the GET operation is to be exposed to the API or not.
  *
  * @param patchMethod$
- * The function defining the patch operation of the object. Gets the object
- * referenced at the REST method by the key, constructs it, tries to modify it
- * with the patch$ function and returns an Observable.
-
+ * The optional function defining the patch operation of the object. Gets the
+ * object referenced at the REST method by the key, constructs it, tries to
+ * modify it with the patch$ function and returns an Observable. If this method
+ * is undefined, the RestORM won't be able to process the default PATCH method.
+ * The getMethod$ must be defined to allow patching.
+ *
  * @param deleteMethod$
- * The function defining the delete operation of the object. Gets the object
- * referenced at the REST method by the key a run its delete method, returning
- * an Observable.
+ * The optional function defining the delete operation of the object. Gets the
+ * object referenced at the REST method by the key a run its delete method,
+ * returning an Observable.If this method is undefined, the RestORM won't be
+ * able to process the default DELETE method. The getMethod$ must be defined to
+ * allow deletion.
+ *
+ * @param exposeGetMethod
+ * Optinal flag to determine if the GET method should be exposed or not.
+ * Defaults to **true**. The getMethod$ must be defined for the patchMethod$ and
+ * deleteMethod$ to work, so it can be defined and not exposed using this flag.
  *
  * @param baseUrl
  * The base URL to use when defining the entry points of the methods. Must
@@ -185,6 +198,7 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     getMethod$,
     patchMethod$,
     deleteMethod$,
+    exposeGetMethod = true,
     baseUrl = "",
     keysUrlParameters = [ ":id" ],
     keylessPostMethod = true,
@@ -231,17 +245,18 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
     module: string;
     router: ApiRouter;
     type: any;
-    postMethod$: ({ object, request, response }:
+    postMethod$?: ({ object, request, response }:
       { object: T, request?: Request, response?: Response }) =>
       rx.Observable<any>;
-    getMethod$: ({ request, response }:
+    getMethod$?: ({ request, response }:
       { request: Request, response?: Response }) => rx.Observable<T>;
-    patchMethod$: ({ object, request, response }:
+    patchMethod$?: ({ object, request, response }:
       { object: T, request?: Request, response?: Response }) =>
       rx.Observable<any>;
-    deleteMethod$: ({ object, request, response }:
+    deleteMethod$?: ({ object, request, response }:
       { object: T, request?: Request, response?: Response }) =>
       rx.Observable<any>;
+    exposeGetMethod?: boolean;
     baseUrl?: string;
     keysUrlParameters?: string[];
     keylessPostMethod?: boolean;
@@ -311,138 +326,181 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
    * POST
    *
    */
-  router.router.post(
-    `${baseUrl}/${postUrlParameters.join("/")}`,
-    ...postFinalPrefixMiddlewares,
-    (request: Request, response: Response, next: any) => {
+  if (postMethod$) {
 
-      // The created object from the request.body
-      let object: T = <any>undefined;
+    router.router.post(
+      `${baseUrl}/${postUrlParameters.join("/")}`,
+      ...postFinalPrefixMiddlewares,
+      (request: Request, response: Response, next: any) => {
 
-      // Process pipeline, start by trying to create the object
-      response.appianObservable = rx.of(0)
-      .pipe(
+        // The created object from the request.body
+        let object: T = <any>undefined;
 
-        rxo.concatMap((o: any) => {
+        // Process pipeline, start by trying to create the object
+        response.appianObservable = rx.of(0)
+        .pipe(
 
-          try {
+          rxo.concatMap((o: any) => {
 
-            return newFunction(
-              { ...request.body, ...request.params, ...newFunctionAdditionalParams() })
+            try {
 
-          } catch(e: any) {
+              return newFunction(
+                { ...request.body, ...request.params, ...newFunctionAdditionalParams() })
 
-            // Error creating the object
-            throw new OrmError.OrmError(e,
-              OrmError.EORMERRORCODES.ERROR_INSTANTIATING_OBJECT,
-              `${type.name} instantiation error: `);
+            } catch(e: any) {
 
-          }
+              // Error creating the object
+              throw new OrmError.OrmError(e,
+                OrmError.EORMERRORCODES.ERROR_INSTANTIATING_OBJECT,
+                `${type.name} instantiation error: `);
 
-        }),
+            }
 
-        rxo.concatMap((o: any) => {
+          }),
 
-          object = o;
-          return postMethod$({ object: object, request: request, response: response })
+          rxo.concatMap((o: any) => {
 
-        }),
+            object = o;
+            return postMethod$({ object: object, request: request, response: response })
 
-        // Catch controlled errors
-        rxo.catchError((e: OrmError.OrmError) => {
+          }),
 
-          // Duplicated keys
-          if (e.OrmErrorCode === OrmError.EORMERRORCODES.DUPLICATED) {
+          // Catch controlled errors
+          rxo.catchError((e: OrmError.OrmError) => {
 
+            // Duplicated keys
+            if (e.OrmErrorCode === OrmError.EORMERRORCODES.DUPLICATED) {
+
+              throw new ApiError({
+                error: e,
+                appianErrorHttpStatus: StatusCodes.CONFLICT,
+                appianErrorPayload: duplicatedErrorPayload(
+                  { error: e, object: object, request: request,
+                    response: response }),
+                appianErrorModule: module
+              })
+
+            }
+
+            // Unmet backend dependency
+            if (e.OrmErrorCode === OrmError.EORMERRORCODES.UNMET_BACKEND_DEPENDENCY) {
+
+              throw new ApiError({
+                error: e,
+                appianErrorHttpStatus: StatusCodes.BAD_REQUEST,
+                appianErrorPayload: unmetBackendDependencyErrorPayload(
+                  { error: e, object: object, request: request,
+                    response: response }),
+                appianErrorModule: module
+              })
+
+            }
+
+            // Invalid parameters provided by the user
+            if (
+              e.OrmErrorCode === OrmError.EORMERRORCODES.INVALID_OBJECT_PARAMETERS ||
+              e.OrmErrorCode === OrmError.EORMERRORCODES.ERROR_INSTANTIATING_OBJECT
+            ) {
+
+              throw new ApiError({
+                error: e,
+                appianErrorHttpStatus: StatusCodes.BAD_REQUEST,
+                appianErrorPayload: badRequestErrorPayload(
+                  { error: e, object: object, request: request,
+                    response: response }),
+                appianErrorModule: module
+              })
+
+            }
+
+            // Any other error: internal error
             throw new ApiError({
               error: e,
-              appianErrorHttpStatus: StatusCodes.CONFLICT,
-              appianErrorPayload: duplicatedErrorPayload(
+              appianErrorHttpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
+              appianErrorPayload: internalErrorPayload(
                 { error: e, object: object, request: request,
                   response: response }),
               appianErrorModule: module
             })
 
-          }
+          }),
 
-          // Unmet backend dependency
-          if (e.OrmErrorCode === OrmError.EORMERRORCODES.UNMET_BACKEND_DEPENDENCY) {
+          // Successfull response
+          rxo.map((o: any) => {
 
-            throw new ApiError({
-              error: e,
-              appianErrorHttpStatus: StatusCodes.BAD_REQUEST,
-              appianErrorPayload: unmetBackendDependencyErrorPayload(
-                { error: e, object: object, request: request,
-                  response: response }),
-              appianErrorModule: module
-            })
+            return postIResponsePayload(
+              { object: object, request: request, response: response });
 
-          }
-
-          // Invalid parameters provided by the user
-          if (
-            e.OrmErrorCode === OrmError.EORMERRORCODES.INVALID_OBJECT_PARAMETERS ||
-            e.OrmErrorCode === OrmError.EORMERRORCODES.ERROR_INSTANTIATING_OBJECT
-          ) {
-
-            throw new ApiError({
-              error: e,
-              appianErrorHttpStatus: StatusCodes.BAD_REQUEST,
-              appianErrorPayload: badRequestErrorPayload(
-                { error: e, object: object, request: request,
-                  response: response }),
-              appianErrorModule: module
-            })
-
-          }
-
-          // Any other error: internal error
-          throw new ApiError({
-            error: e,
-            appianErrorHttpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
-            appianErrorPayload: internalErrorPayload(
-              { error: e, object: object, request: request,
-                response: response }),
-            appianErrorModule: module
           })
 
-        }),
+        )
 
-        // Successfull response
-        rxo.map((o: any) => {
+        next();
 
-          return postIResponsePayload(
-            { object: object, request: request, response: response });
+      },
+      ...postFinalSuffixMiddlewares
+    );
 
-        })
-
-      )
-
-      next();
-
-    },
-    ...postFinalSuffixMiddlewares
-  );
+  }
 
   /**
    *
    * GET.
    *
    */
-  router.router.get(
-    `${baseUrl}/${keysUrlParameters.join("/")}`,
-    ...getFinalPrefixMiddlewares,
-    (request: Request, response: Response, next: any) => {
+  if (exposeGetMethod) {
 
-      // Get based on the parameters passed in the URL
-      response.appianObservable = getMethod$({ request: request, response: response })
-      .pipe(
+    router.router.get(
+      `${baseUrl}/${keysUrlParameters.join("/")}`,
+      ...getFinalPrefixMiddlewares,
+      (request: Request, response: Response, next: any) => {
 
-        rxo.catchError((e: OrmError.OrmError) => {
+        // Get based on the parameters passed in the URL
+        response.appianObservable = getMethod$({ request: request, response: response })
+        .pipe(
 
-          // The data coming from the database made the initialization fail
-          if (e.OrmErrorCode === OrmError.EORMERRORCODES.ERROR_INSTANTIATING_OBJECT) {
+          rxo.catchError((e: OrmError.OrmError) => {
 
+            // The data coming from the database made the initialization fail
+            if (e.OrmErrorCode === OrmError.EORMERRORCODES.ERROR_INSTANTIATING_OBJECT) {
+
+              throw new ApiError({
+                error: e,
+                appianErrorHttpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
+                appianErrorPayload: internalErrorPayload(
+                  { error: e, request: request, response: response }),
+                appianErrorModule: module
+              })
+
+            }
+
+            // User commited an error with data types
+            if (e.OrmErrorCode === OrmError.EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
+
+              throw new ApiError({
+                error: e,
+                appianErrorHttpStatus: StatusCodes.BAD_REQUEST,
+                appianErrorPayload: unmetBackendDependencyErrorPayload(
+                  { error: e, request: request, response: response }),
+                appianErrorModule: module
+              })
+
+            }
+
+            // Requested object not found
+            if (e.OrmErrorCode === OrmError.EORMERRORCODES.NOT_FOUND) {
+
+              throw new ApiError({
+                error: e,
+                appianErrorHttpStatus: StatusCodes.NOT_FOUND,
+                appianErrorPayload: notFoundErrorPayload(
+                  { error: e, request: request, response: response }),
+                appianErrorModule: module
+              })
+
+            }
+
+            // Any other error: internal error
             throw new ApiError({
               error: e,
               appianErrorHttpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -451,238 +509,211 @@ export function generateDefaultRestRouters<T extends IRestOrm<T>>({
               appianErrorModule: module
             })
 
-          }
+          }),
 
-          // User commited an error with data types
-          if (e.OrmErrorCode === OrmError.EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
+          // Push a successfull response
+          rxo.map((object: any) => {
 
-            throw new ApiError({
-              error: e,
-              appianErrorHttpStatus: StatusCodes.BAD_REQUEST,
-              appianErrorPayload: unmetBackendDependencyErrorPayload(
-                { error: e, request: request, response: response }),
-              appianErrorModule: module
-            })
+            return getIResponsePayload(
+              { object: object, request: request, response: response });
 
-          }
-
-          // Requested object not found
-          if (e.OrmErrorCode === OrmError.EORMERRORCODES.NOT_FOUND) {
-
-            throw new ApiError({
-              error: e,
-              appianErrorHttpStatus: StatusCodes.NOT_FOUND,
-              appianErrorPayload: notFoundErrorPayload(
-                { error: e, request: request, response: response }),
-              appianErrorModule: module
-            })
-
-          }
-
-          // Any other error: internal error
-          throw new ApiError({
-            error: e,
-            appianErrorHttpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
-            appianErrorPayload: internalErrorPayload(
-              { error: e, request: request, response: response }),
-            appianErrorModule: module
           })
 
-        }),
+        )
 
-        // Push a successfull response
-        rxo.map((object: any) => {
+        next();
 
-          return getIResponsePayload(
-            { object: object, request: request, response: response });
+      },
+      ...getFinalSuffixMiddlewares
+    );
 
-        })
-
-      )
-
-      next();
-
-    },
-    ...getFinalSuffixMiddlewares
-  );
+  }
 
   /**
    *
    * PATCH
    *
    */
-  router.router.patch(
-    `${baseUrl}/${keysUrlParameters.join("/")}`,
-    ...patchFinalPrefixMiddlewares,
-    (request: Request, response: Response, next: any) => {
+  if (patchMethod$ && getMethod$) {
 
-      // The created object from the request.body
-      let object: T;
+    router.router.patch(
+      `${baseUrl}/${keysUrlParameters.join("/")}`,
+      ...patchFinalPrefixMiddlewares,
+      (request: Request, response: Response, next: any) => {
 
-      // Process pipeline: check if the object exists
-      response.appianObservable = getMethod$({ request: request, response: response })
-      .pipe(
+        // The created object from the request.body
+        let object: T;
 
-        // If it exists, make the patching with the **patch$** method defined at
-        // the IRestORM interface
-        rxo.concatMap((o: T) => {
+        // Process pipeline: check if the object exists
+        response.appianObservable = getMethod$({ request: request, response: response })
+        .pipe(
 
-          object = o;
-          object.patch$({ ...request.params, ...request.body });
-          return patchMethod$({ object: object, request: request, response: response })
+          // If it exists, make the patching with the **patch$** method defined at
+          // the IRestORM interface
+          rxo.concatMap((o: T) => {
 
-        }),
+            object = o;
+            object.patch$({ ...request.params, ...request.body });
+            return patchMethod$({ object: object, request: request, response: response })
 
-        // Intercept expected errors
-        rxo.catchError((e: OrmError.OrmError) => {
+          }),
 
-          // User made a mistake with data types
-          if (e.OrmErrorCode === OrmError.EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
+          // Intercept expected errors
+          rxo.catchError((e: OrmError.OrmError) => {
 
+            // User made a mistake with data types
+            if (e.OrmErrorCode === OrmError.EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
+
+              throw new ApiError({
+                error: e,
+                appianErrorHttpStatus: StatusCodes.BAD_REQUEST,
+                appianErrorPayload: badRequestErrorPayload(
+                  { error: e, object: object, request: request,
+                    response: response }),
+                appianErrorModule: module
+              })
+
+            }
+
+            // Foreign key violation
+            if (e.OrmErrorCode === OrmError.EORMERRORCODES.UNMET_BACKEND_DEPENDENCY) {
+
+              throw new ApiError({
+                error: e,
+                appianErrorHttpStatus: StatusCodes.CONFLICT,
+                appianErrorPayload: duplicatedErrorPayload(
+                  { error: e, object: object, request: request,
+                    response: response }),
+                appianErrorModule: module
+              })
+
+            }
+
+            // The object does not exists
+            if (e.OrmErrorCode === OrmError.EORMERRORCODES.NOT_FOUND) {
+
+              throw new ApiError({
+                error: e,
+                appianErrorHttpStatus: StatusCodes.NOT_FOUND,
+                appianErrorPayload: notFoundErrorPayload(
+                  { error: e, request: request, response: response }),
+                appianErrorModule: module
+              })
+
+            }
+
+            // Internal error
             throw new ApiError({
               error: e,
-              appianErrorHttpStatus: StatusCodes.BAD_REQUEST,
-              appianErrorPayload: badRequestErrorPayload(
-                { error: e, object: object, request: request,
-                  response: response }),
-              appianErrorModule: module
-            })
-
-          }
-
-          // Foreign key violation
-          if (e.OrmErrorCode === OrmError.EORMERRORCODES.UNMET_BACKEND_DEPENDENCY) {
-
-            throw new ApiError({
-              error: e,
-              appianErrorHttpStatus: StatusCodes.CONFLICT,
-              appianErrorPayload: duplicatedErrorPayload(
-                { error: e, object: object, request: request,
-                  response: response }),
-              appianErrorModule: module
-            })
-
-          }
-
-          // The object does not exists
-          if (e.OrmErrorCode === OrmError.EORMERRORCODES.NOT_FOUND) {
-
-            throw new ApiError({
-              error: e,
-              appianErrorHttpStatus: StatusCodes.NOT_FOUND,
-              appianErrorPayload: notFoundErrorPayload(
+              appianErrorHttpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
+              appianErrorPayload: internalErrorPayload(
                 { error: e, request: request, response: response }),
               appianErrorModule: module
             })
 
-          }
+          }),
 
-          // Internal error
-          throw new ApiError({
-            error: e,
-            appianErrorHttpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
-            appianErrorPayload: internalErrorPayload(
-              { error: e, request: request, response: response }),
-            appianErrorModule: module
+          // Push the successfull response
+          rxo.map((o: any) => {
+
+            return patchIResponsePayload(
+              { object: object, request: request, response: response });
+
           })
 
-        }),
+        )
 
-        // Push the successfull response
-        rxo.map((o: any) => {
+        next();
 
-          return patchIResponsePayload(
-            { object: object, request: request, response: response });
+      },
+      ...patchFinalSuffixMiddlewares
+    );
 
-        })
-
-      )
-
-      next();
-
-    },
-    ...patchFinalSuffixMiddlewares
-  );
+  }
 
   /**
    *
    * DELETE
    *
    */
-  router.router.delete(
-    `${baseUrl}/${keysUrlParameters.join("/")}`,
-    ...deleteFinalPrefixMiddlewares,
-    (request: Request, response: Response, next: any) => {
+  if (deleteMethod$ && getMethod$) {
 
-      // The created object from the request.body
-      let object: T;
+    router.router.delete(
+      `${baseUrl}/${keysUrlParameters.join("/")}`,
+      ...deleteFinalPrefixMiddlewares,
+      (request: Request, response: Response, next: any) => {
 
-      // Process pipeline: get the object
-      response.appianObservable = getMethod$({ request: request, response: response })
-      .pipe(
+        // The created object from the request.body
+        let object: T;
 
-        // Make the deletion
-        rxo.concatMap((o: T) => {
+        // Process pipeline: get the object
+        response.appianObservable = getMethod$({ request: request, response: response })
+        .pipe(
 
-          object = o;
-          return deleteMethod$({ object: object, request: request, response: response })
+          // Make the deletion
+          rxo.concatMap((o: T) => {
 
-        }),
+            object = o;
+            return deleteMethod$({ object: object, request: request, response: response })
 
-        // Intercept expected errors
-        rxo.catchError((e: OrmError.OrmError) => {
+          }),
 
-          // The user made a mistake with data types
-          if (e.OrmErrorCode === OrmError.EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
+          // Intercept expected errors
+          rxo.catchError((e: OrmError.OrmError) => {
 
+            // The user made a mistake with data types
+            if (e.OrmErrorCode === OrmError.EORMERRORCODES.INVALID_OBJECT_PARAMETERS) {
+
+              throw new ApiError({
+                error: e,
+                appianErrorHttpStatus: StatusCodes.BAD_REQUEST,
+                appianErrorPayload: unmetBackendDependencyErrorPayload(
+                  { error: e, request: request, response: response }),
+                appianErrorModule: module
+              })
+
+            }
+
+            // The object does not exists
+            if (e.OrmErrorCode === OrmError.EORMERRORCODES.NOT_FOUND) {
+
+              throw new ApiError({
+                error: e,
+                appianErrorHttpStatus: StatusCodes.NOT_FOUND,
+                appianErrorPayload: notFoundErrorPayload(
+                  { error: e, request: request, response: response }),
+                appianErrorModule: module
+              })
+
+            }
+
+            // Unexpected error here
             throw new ApiError({
               error: e,
-              appianErrorHttpStatus: StatusCodes.BAD_REQUEST,
-              appianErrorPayload: unmetBackendDependencyErrorPayload(
+              appianErrorHttpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
+              appianErrorPayload: internalErrorPayload(
                 { error: e, request: request, response: response }),
               appianErrorModule: module
             })
 
-          }
+          }),
 
-          // The object does not exists
-          if (e.OrmErrorCode === OrmError.EORMERRORCODES.NOT_FOUND) {
+          // Push a successfull response
+          rxo.map((o: any) => {
 
-            throw new ApiError({
-              error: e,
-              appianErrorHttpStatus: StatusCodes.NOT_FOUND,
-              appianErrorPayload: notFoundErrorPayload(
-                { error: e, request: request, response: response }),
-              appianErrorModule: module
-            })
+            return deleteIResponsePayload(
+              { object: object, request: request, response: response });
 
-          }
-
-          // Unexpected error here
-          throw new ApiError({
-            error: e,
-            appianErrorHttpStatus: StatusCodes.INTERNAL_SERVER_ERROR,
-            appianErrorPayload: internalErrorPayload(
-              { error: e, request: request, response: response }),
-            appianErrorModule: module
           })
 
-        }),
+        )
 
-        // Push a successfull response
-        rxo.map((o: any) => {
+        next();
 
-          return deleteIResponsePayload(
-            { object: object, request: request, response: response });
+      },
+      ...deleteFinalSuffixMiddlewares
+    );
 
-        })
-
-      )
-
-      next();
-
-    },
-    ...deleteFinalSuffixMiddlewares
-  );
+  }
 
 }
