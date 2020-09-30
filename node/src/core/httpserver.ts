@@ -78,6 +78,13 @@ export class HttpServer {
 
   /**
    *
+   * API max length: controls the size of the POSTd data. Defaults to "5mb".
+   *
+   */
+  private _jsonMaxLength: string;
+
+  /**
+   *
    * Output formatter.
    *
    */
@@ -94,29 +101,42 @@ export class HttpServer {
    *
    * Constructor.
    *
-   * @param __namedParameters     HTTP server options.
-   * @param port                  **Optional**. The server port, defaults to
-   *                              **8080**.
-   * @param urlLimit              **Optional**. The size of the URL, defaults to
-   *                              **2mb**.
-   * @param routes                **Optional**. The set of {@link ApiRouter}
-   *                              based classes that defines the server's
-   *                              routes.
-   * @param statics               **Optional**. The set of statics to be served
-   *                              by the server.
-   * @param requestLogFilePath    **Optional**. The request log file path,
-   *                              defaults to **\/logs\/httpaccess.csv**.
+   * @param __namedParameters
+   * HTTP server options.
+   *
+   * @param port
+   * **Optional**. The server port, defaults to **8080**.
+   *
+   * @param urlLimit
+   * **Optional**. The size of the URL, defaults to **2mb**.
+   *
+   * @param jsonMaxLength
+   * **Optional**. The size of the request, for example when POSTing large
+   * bodies. Defaults to **5mb**.
+   *
+   * @param routes
+   * **Optional**. The set of {@link ApiRouter} based classes that defines the
+   * server's routes.
+   *
+   * @param statics
+   * **Optional**. The set of statics to be served by the server.
+   *
+   * @param requestLogFilePath
+   * **Optional**. The request log file path, defaults to
+   * **\/logs\/httpaccess.csv**.
    *
    */
   constructor({
     port = 8080,
     urlLimit = "2mb",
+    jsonMaxLength = "5mb",
     routes,
     statics,
     requestLogFilePath = "/logs/httpaccess.csv"
   }: {
     port?: number;
     urlLimit?: string;
+    jsonMaxLength?: string;
     routes?: ApiRouter[];
     statics?: IStatic[];
     requestLogFilePath?: string;
@@ -131,6 +151,7 @@ export class HttpServer {
     // The port
     this._port = port;
     this._urlLimit = urlLimit;
+    this._jsonMaxLength = jsonMaxLength;
     this._app = express() as express.Application;
 
     // Configure express and logging stuff
@@ -174,7 +195,7 @@ export class HttpServer {
     );
 
     this._app.use(bodyParser
-      .json({ limit: this._urlLimit })
+      .json({ limit: this._jsonMaxLength })
     );
 
     //cors settings
