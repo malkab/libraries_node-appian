@@ -67,10 +67,10 @@ import { StatusCodes } from 'http-status-codes';
  *
  * @param patchMethod$
  * The optional function defining the patch operation of the object. Gets the
- * object referenced at the REST method by the key, constructs it, tries to
- * modify it with the patch$ function and returns an Observable. If this method
- * is undefined, the RestORM won't be able to process the default PATCH method.
- * The getMethod$ must be defined to allow patching.
+ * object referenced at the REST method by the key, constructs it, patch it and
+ * returns an Observable. If this method is undefined, the RestORM won't be able
+ * to process the default PATCH method. The getMethod$ must be defined to allow
+ * patching.
  *
  * @param deleteMethod$
  * The optional function defining the delete operation of the object. Gets the

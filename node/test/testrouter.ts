@@ -90,13 +90,12 @@ export class TestRouter extends ApiRouter {
 
   /**
    *
-   * This is the authentication function. Must return something to add
-   * to the appianAuth member of Request or null if not validated.
+   * This is the authentication function. Must return something to add to the
+   * appianAuth member of Request or null if not validated.
    *
    * Here connections to the database to check user and such should be
-   * performed. In this example there is no example of refreshing
-   * token, but session / refresh token is a common pattern, as is
-   * the API keys.
+   * performed. In this example there is no example of refreshing token, but
+   * session / refresh token is a common pattern, as is the API keys.
    *
    */
   private _authentication(params: any): rx.Observable<any> {
@@ -130,14 +129,10 @@ export class TestRouter extends ApiRouter {
 
     /**
      *
-     * Test entry. This is an automatic
-     * processing of a request adding to the
-     * response a success member of class
-     * ApiSuccess. Process look for either an
-     * ApiError as member res.error, an
-     * ApiSuccess as member res.success, or
-     * a complex observable pipe chain
-     * as res.observable member, in this order.
+     * Test entry. This is an automatic processing of a request adding to the
+     * response a success member of class ApiSuccess. Process look for either an
+     * ApiError as member res.error, an ApiSuccess as member res.success, or a
+     * complex observable pipe chain as res.observable member, in this order.
      *
      */
     this.router.get(
@@ -159,10 +154,8 @@ export class TestRouter extends ApiRouter {
 
     /**
      *
-     * Test entry, non-automatic process.
-     * This is an example of completely
-     * manual entry processing, calling
-     * directly the httpSuccess method to
+     * Test entry, non-automatic process. This is an example of completely
+     * manual entry processing, calling directly the httpSuccess method to
      * produce a succesfull entry call.
      *
      */
@@ -187,8 +180,7 @@ export class TestRouter extends ApiRouter {
 
     /**
      *
-     * Test error entry. An automatic error entry
-     * processing.
+     * Test error entry. An automatic error entry processing.
      *
      */
     this.router.get(
@@ -211,8 +203,7 @@ export class TestRouter extends ApiRouter {
 
     /**
      *
-     * Test error entry, non-automatic. A manual
-     * processing of an error.
+     * Test error entry, non-automatic. A manual processing of an error.
      *
      */
     this.router.get(
@@ -239,8 +230,7 @@ export class TestRouter extends ApiRouter {
 
     /**
      *
-     * Post file 1. Automatic processing of
-     * a file upload.
+     * Post file 1. Automatic processing of a file upload.
      *
      */
     this.router.post(
@@ -307,13 +297,11 @@ export class TestRouter extends ApiRouter {
 
     /**
      *
-     * Complex observable processing. The response
-     * get an observable member and the processResponse
-     * method subscribes to the observable pipe. In the
-     * chain, either throw ApiError or return an
-     * IResponsePayload with the payload and logPayload.
-     * The processResponse will take care of the response
-     * and logging.
+     * Complex observable processing. The response get an observable member and
+     * the processResponse method subscribes to the observable pipe. In the
+     * chain, either throw ApiError or return an IResponsePayload with the
+     * payload and logPayload. The processResponse will take care of the
+     * response and logging.
      *
      */
     this.router.get(
@@ -346,13 +334,11 @@ export class TestRouter extends ApiRouter {
 
     /**
      *
-     * Complex observable processing. The response
-     * get an observable member and the processResponse
-     * method subscribes to the observable pipe. In the
-     * chain, either throw ApiError or return an
-     * IResponsePayload with the payload and logPayload.
-     * The processResponse will take care of the response
-     * and logging.
+     * Complex observable processing. The response get an observable member and
+     * the processResponse method subscribes to the observable pipe. In the
+     * chain, either throw ApiError or return an IResponsePayload with the
+     * payload and logPayload. The processResponse will take care of the
+     * response and logging.
      *
      */
     this.router.get(
@@ -390,13 +376,11 @@ export class TestRouter extends ApiRouter {
 
     /**
      *
-     * Complex observable processing. The response
-     * get an observable member and the processResponse
-     * method subscribes to the observable pipe. In the
-     * chain, either throw ApiError or return an
-     * IResponsePayload with the payload and logPayload.
-     * The processResponse will take care of the response
-     * and logging.
+     * Complex observable processing. The response get an observable member and
+     * the processResponse method subscribes to the observable pipe. In the
+     * chain, either throw ApiError or return an IResponsePayload with the
+     * payload and logPayload. The processResponse will take care of the
+     * response and logging.
      *
      */
     this.router.get(
@@ -438,8 +422,7 @@ export class TestRouter extends ApiRouter {
 
     /**
      *
-     * Complex observable processing for
-     * persistence testing.
+     * Complex observable processing for persistence testing.
      *
      */
     this.router.post(
