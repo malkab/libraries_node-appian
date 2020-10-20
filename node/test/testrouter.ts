@@ -547,13 +547,17 @@ export class TestRouter extends ApiRouter {
         o.c = req.file.filename;
         return o.pgInsert$(this._pgCon)
       },
+
       getMethod$: ({ request: req }) => OrmTest.get$(this._pgCon, +req.params.a, +req.params.b),
+
       patchMethod$: ({ request: req, object: o }) => {
         o.c = req.file.filename;
         o.d = +req.body.d;
         return o.pgUpdate$(this._pgCon)
       },
+
       deleteMethod$: ({ object: o }) => o.pgDelete$(this._pgCon),
+
       router: this,
       type: OrmTest,
       baseUrl: "/orm",
