@@ -3,9 +3,6 @@
 This is the API for SunnSaaS.
 
 
-
-
-
 ## Design Phylosophy
 
 Some design rules ahead.
@@ -25,10 +22,7 @@ Some design rules ahead.
 ```
 
 
-
-
-
-## Analysis Tracking, Analysis Tasks & Analysis Jobs 
+## Analysis Tracking, Analysis Tasks & Analysis Jobs
 
 **UcXXXAnalysisTrack**, **AnalysisTask**, and **AnalysisJob**: a new object is to be implemented at **libsunnsaas**, the **UcXXXAnalysisTrack**. This will be a family of objects, one for each Use Case, that will track the run of an Analysis. The run of an Analysis is going to be divided into **AnalysisTask** objects, that are, in turn, made up of one or several **AnalysisJob**. Only the latter are sent to workers, while the former controls its run. An **AnalysisTask** will have several arrays to track jobs:
 
@@ -38,10 +32,6 @@ Some design rules ahead.
   - **completedAnalysisJob**: jobs that have been successfully processed by the worker.
 
 
-
-
-
 ## Monolithic Workflow for Feasibility Study Use Case
 
 Check Phys/2020-02-26 for details.
-

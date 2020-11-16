@@ -1,8 +1,11 @@
-Project documentation.
+# Project Documentation
 
-These are the TypeDoc build scripts. These scripts are meant to be run
-from this folder.
+Use the **package.json target build-docs** to build this docs.
 
-All paths are relative to this folder.
+Folders:
 
-Include here also all other documentation assets for the project.
+- **assets:** for any other additional assets like OmniGraffle or MindNode;
+
+- **markdown:** for Markdown;
+
+- **images:** put here the images to be referenced by the in-code docs.

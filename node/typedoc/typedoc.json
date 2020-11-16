@@ -1,18 +1,18 @@
 {
 
-    "inputFiles": [
-        "../src"
-    ],
+  "inputFiles": [
+      "../src"
+  ],
 
-    "name": "Appian",
-    "inlineSourceMap": true,
-    "includeDeclarations": true,
-    "ignoreCompilerErrors": true,
-    "mode": "file",
-    "excludeExternals": true,
-    "excludeNotExported": true,
-    "excludeProtected": true,
-    "excludePrivate": true,
-    "readme": "./markdown/MAINPAGE.md"
-    
+  "name": "Appian",
+  "inlineSourceMap": true,
+  "includeDeclarations": true,
+  "ignoreCompilerErrors": true,
+  "mode": "file",
+  "excludeExternals": true,
+  "excludeNotExported": true,
+  "excludeProtected": true,
+  "excludePrivate": true,
+  "readme": "./markdown/MAINPAGE.md"
+
 }

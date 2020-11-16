@@ -2,7 +2,7 @@ import multer from "multer";
 
 import * as utilPath from "path";
 
-import { NodeUtilsHashing, NodeUtilsFiles } from "@malkab/node-utils";
+import { mkdirSync, genUid } from "@malkab/node-utils";
 
 /**
  *
@@ -44,7 +44,7 @@ export class Multer{
     // If exists, fails
     try {
 
-      NodeUtilsFiles.mkdirSync(storagePath);
+      mkdirSync(storagePath);
 
     } catch(e) {
 
@@ -69,7 +69,7 @@ export class Multer{
 
             const fileData = utilPath.parse(file.originalname);
 
-            cb(null, `${NodeUtilsHashing.genUid()}${fileData.ext}`);
+            cb(null, `${genUid()}${fileData.ext}`);
 
           } else {
 

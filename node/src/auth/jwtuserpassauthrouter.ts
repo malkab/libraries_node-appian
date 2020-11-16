@@ -20,6 +20,34 @@ import * as rx from "rxjs";
 
 /**
  *
+ * This is the interface of the response of a login attempt.
+ *
+ */
+export interface ILoginAttemptResponse {
+  /**
+   *
+   * Whether the login attempt was successfull or not.
+   *
+   */
+  successfull: boolean;
+  /**
+   *
+   * User data of the loged user, if successfull.
+   *
+   */
+  userData?: any;
+  /**
+   *
+   * The access token for the session. This is assigned after the user has been
+   * credited into the system, so the loginFunction should not try to attempt
+   * to define it.
+   *
+   */
+  accessToken?: string;
+}
+
+/**
+ *
  * This is a helper router implementing a user / password authorization with an
  * Access / Refresh token schema over JWT.
  *
@@ -110,7 +138,7 @@ export class JwtUserPassAuthRouter extends ApiRouter {
    * The login function.
    *
    */
-  private _loginFunction: (params: any) => rx.Observable<boolean>;
+  private _loginFunction: (params: any) => rx.Observable<ILoginAttemptResponse>;
 
   /**
    *
@@ -173,32 +201,31 @@ export class JwtUserPassAuthRouter extends ApiRouter {
    *
    * Constructor.
    *
-   * @param __namedParameters     Logging options.
-   * @param loginFunction         A function that gets the user, the pass, and
-   *                              the optional parameters defined at
-   *                              additionalParams and must return an
-   *                              Observable<boolean> that determines if the
-   *                              user / pass match an existing user. The
-   *                              function will receive an structure in the form
-   *                              { user: string; pass: string;
-   *                              ...additionalParams: any } as parameter.
-   * @param refreshTokenFunction  A function that gets the user, the refresh
-   *                              token and the optional parameters defined at
-   *                              additionalParams and must return an
-   *                              Observable<boolean> that determines if the
-   *                              refresh token storing process was successfull.
-   *                              The function will receive an structure in the
-   *                              form { user: string; token: string;
-   *                              ...additionalParams; } as parameter.
-   * @param refreshFunction       A function that gets a token stored in a
-   *                              cookie and the optional parameters defined at
-   *                              additionalParams and must return an
-   *                              Observable<boolean> to determine of the
-   *                              refresh token at the cookie is valid, if it
-   *                              exists at the storage system and matches the
-   *                              intended user. The function will receive an
-   *                              structure in the form { token: string;
-   *                              ...additionalParams; } as parameter.
+   * @param __namedParameters
+   * Logging options.
+   *
+   * @param loginFunction
+   * A function that gets the user, the pass, and the optional parameters
+   * defined at additionalParams and must return an Observable<boolean> that
+   * determines if the user / pass match an existing user. The function will
+   * receive an structure in the form { user: string; pass: string;
+   * ...additionalParams: any } as parameters. It will return login information
+   * in a ILoginAttemptResponse structure.
+   *
+   * @param refreshTokenFunction
+   * A function that gets the user, the refresh token and the optional
+   * parameters defined at additionalParams and must return an
+   * Observable<boolean> that determines if the refresh token storing process
+   * was successfull. The function will receive an structure in the form { user:
+   * string; token: string; ...additionalParams; } as parameter.
+   *
+   * @param refreshFunction
+   * A function that gets a token stored in a cookie and the optional parameters
+   * defined at additionalParams and must return an Observable<boolean> to
+   * determine of the refresh token at the cookie is valid, if it exists at the
+   * storage system and matches the intended user. The function will receive an
+   * structure in the form { token: string; ...additionalParams; } as parameter.
+   *
    * @param validateFunction      The validate auth function. This function is
    *                              used at the bearerAuth middleware to check if
    *                              the given token information coming from the
@@ -244,7 +271,7 @@ export class JwtUserPassAuthRouter extends ApiRouter {
     refreshEntryUrl = "/refresh",
     moduleName = "auth"
   }: {
-    loginFunction: (params: any) => rx.Observable<boolean>;
+    loginFunction: (params: any) => rx.Observable<ILoginAttemptResponse>;
     refreshTokenStoreFunction: (params: any) => rx.Observable<boolean>;
     refreshFunction: (params: any) => rx.Observable<boolean>;
     validateFunction: (params: any) => rx.Observable<any>;
@@ -309,14 +336,19 @@ export class JwtUserPassAuthRouter extends ApiRouter {
       let accessToken: string;
       let refreshToken: string;
 
+      // The ILoginAttemptResponse from the loginFunction
+      let iLoginAttemptResponse: ILoginAttemptResponse;
+
       // Check user and pass
       this._loginFunction({ user: user, pass: pass, ...this._additionalParams })
       .pipe(
 
         // Validate login
-        rxo.concatMap((o: boolean) => {
+        rxo.concatMap((o: ILoginAttemptResponse) => {
 
-          if (o) {
+          iLoginAttemptResponse = o;
+
+          if (o.successfull) {
 
             // The user was successfully logged, create tokens
             accessToken = this._signAccessToken(user);
@@ -329,7 +361,7 @@ export class JwtUserPassAuthRouter extends ApiRouter {
           } else {
 
             // Just throw an error
-            throw new Error();
+            throw new Error("unable to refresh login tokens");
 
           }
 
@@ -345,12 +377,17 @@ export class JwtUserPassAuthRouter extends ApiRouter {
               path: `${this._urlBaseRoot}${this._refreshEntryUrl}`
             });
 
-            return { accessToken: accessToken }
+            // The final ILoginAttemptResponse
+            return <ILoginAttemptResponse>{
+              accessToken: accessToken,
+              successfull: true,
+              userData: iLoginAttemptResponse.userData
+            }
 
           } else {
 
             // Just throw an error
-            throw new Error();
+            throw new Error("unable to refresh token cookie");
 
           }
 
@@ -359,7 +396,7 @@ export class JwtUserPassAuthRouter extends ApiRouter {
       )
       .subscribe(
 
-        (o: any) => {
+        (o: ILoginAttemptResponse) => {
 
           httpSuccess({
             httpRequest: req,
