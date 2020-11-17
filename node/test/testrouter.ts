@@ -1,4 +1,4 @@
-import { Request, Response, ApiError, ApiSuccess, IResponsePayload, ApiRouter, addMetadata, httpError, httpSuccess, processResponse, Auth, Utils, RestOrm } from "../src/index";
+import { generateDefaultRestRouters, bearerAuth, MulterMemory, Multer, JwtToken, Request, Response, ApiError, ApiSuccess, IResponsePayload, ApiRouter, addMetadata, httpError, httpSuccess, processResponse } from "../src/index";
 
 import { StatusCodes } from "http-status-codes";
 
@@ -49,7 +49,7 @@ export class TestRouter extends ApiRouter {
    * The JWT token.
    *
    */
-  private _jwtToken: Auth.JwtToken;
+  private _jwtToken: JwtToken;
 
   /**
    *
@@ -69,7 +69,7 @@ export class TestRouter extends ApiRouter {
     redis: Redis;
     urlBaseRoot?: string;
     log?: NodeLogger;
-    jwtToken: Auth.JwtToken;
+    jwtToken: JwtToken;
   }) {
 
     super({
@@ -123,9 +123,8 @@ export class TestRouter extends ApiRouter {
    */
   protected _configureRouter(): void {
 
-    const multerFile: Utils.Multer = new Utils.Multer("/data/a", true);
-
-    const multerMemory: Utils.MulterMemory = new Utils.MulterMemory();
+    const multerFile: Multer = new Multer("/data/a", true);
+    const multerMemory: MulterMemory = new MulterMemory();
 
     /**
      *
@@ -149,7 +148,30 @@ export class TestRouter extends ApiRouter {
         next();
 
       },
-      processResponse({})
+      processResponse()
+    );
+
+    /**
+     *
+     * The same as above, but downloading the result as a JSON file.
+     *
+     */
+    this.router.get(
+      "/testdownload",
+      addMetadata(this.module, this.log),
+      (req: Request, res: Response, next: any) => {
+
+        res.appianSuccess = new ApiSuccess({
+          module: this.module,
+          payload: { a: 0, b: 1, c: 2 },
+          logPayload: { a: 0 },
+          fileName: "downloadjson.json"
+        })
+
+        next();
+
+      },
+      processResponse()
     );
 
     /**
@@ -180,6 +202,31 @@ export class TestRouter extends ApiRouter {
 
     /**
      *
+     * Same as above, download.
+     *
+     */
+    this.router.get(
+      "/testnotautomaticdownload",
+      addMetadata(this.module, this.log),
+      (req: Request, res: Response) => {
+
+        httpSuccess({
+          httpRequest: req,
+          httpResponse: res,
+          success: new ApiSuccess({
+            module: this.module,
+            logPayload: { a: 99 },
+            payload: { a: 99, b: 88}
+          }),
+          log: this.log,
+          fileName: "download.json"
+        })
+
+      }
+    );
+
+    /**
+     *
      * Test error entry. An automatic error entry processing.
      *
      */
@@ -198,7 +245,7 @@ export class TestRouter extends ApiRouter {
         next();
 
       },
-      processResponse({})
+      processResponse()
     );
 
     /**
@@ -247,7 +294,7 @@ export class TestRouter extends ApiRouter {
         next();
 
       },
-      processResponse({})
+      processResponse()
     );
 
     /**
@@ -269,7 +316,7 @@ export class TestRouter extends ApiRouter {
         next();
 
       },
-      processResponse({})
+      processResponse()
     );
 
     /**
@@ -292,7 +339,7 @@ export class TestRouter extends ApiRouter {
         next();
 
       },
-      processResponse({})
+      processResponse()
     );
 
     /**
@@ -305,7 +352,7 @@ export class TestRouter extends ApiRouter {
      *
      */
     this.router.get(
-      "/observable/success/:key",
+      "/observable/success",
       addMetadata(this.module, this.log),
       (req: Request, res: Response, next: any) => {
 
@@ -329,7 +376,41 @@ export class TestRouter extends ApiRouter {
         next();
 
       },
-      processResponse({})
+      processResponse({ verbose: false })
+    );
+
+    /**
+     *
+     * Same as above, downloadind file.
+     *
+     */
+    this.router.get(
+      "/observable/successdownload",
+      addMetadata(this.module, this.log),
+      (req: Request, res: Response, next: any) => {
+
+        res.appianObservable = rx.timer(1000)
+        .pipe(
+
+          rxo.take(1),
+
+          rxo.map((o: any) => {
+
+            // This is a successfull response
+            return <IResponsePayload>{
+              payload: { a: 44, b: 22 },
+              logPayload: { a: 44 },
+              fileName: "fromObservable.json"
+            };
+
+          })
+
+        )
+
+        next();
+
+      },
+      processResponse({verbose: false})
     );
 
     /**
@@ -417,7 +498,7 @@ export class TestRouter extends ApiRouter {
         next();
 
       },
-      processResponse({})
+      processResponse()
     );
 
     /**
@@ -483,7 +564,7 @@ export class TestRouter extends ApiRouter {
         next();
 
       },
-      processResponse({})
+      processResponse()
     );
 
     /**
@@ -493,7 +574,7 @@ export class TestRouter extends ApiRouter {
      */
     this.router.post(
       "/logout",
-      Auth.bearerAuth(this._jwtToken, this._authentication),
+      bearerAuth(this._jwtToken, this._authentication),
       addMetadata(this.module, this.log),
       (req: Request, res: Response, next: any) => {
 
@@ -509,7 +590,7 @@ export class TestRouter extends ApiRouter {
         next();
 
       },
-      processResponse({})
+      processResponse()
     );
 
     /**
@@ -519,7 +600,7 @@ export class TestRouter extends ApiRouter {
      */
     this.router.get(
       "/auth",
-      Auth.bearerAuth(this._jwtToken, this._authentication),
+      bearerAuth(this._jwtToken, this._authentication),
       addMetadata(this.module, this.log),
       (req: Request, res: Response, next: any) => {
 
@@ -531,7 +612,7 @@ export class TestRouter extends ApiRouter {
         next();
 
       },
-      processResponse({})
+      processResponse()
     );
 
     /**
@@ -539,7 +620,7 @@ export class TestRouter extends ApiRouter {
      * Define default REST API methods for ORM objects.
      *
      */
-    RestOrm.generateDefaultRestRouters<OrmTest>({
+    generateDefaultRestRouters<OrmTest>({
       module: "testrouter",
 
       // Complex logic is possible in the REST methods

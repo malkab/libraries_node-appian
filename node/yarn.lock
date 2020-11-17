@@ -32,10 +32,10 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
-"@malkab/node-logger@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@malkab/node-logger/-/node-logger-1.1.2.tgz#ec119ba0f43ac5cada4bfc43e7ff7991c10828b3"
-  integrity sha512-+pRUxJzYymP3Y9C8JG0K4HCPkVTasOGvZMrV68vePVOUuhCI1zMg3XL2yGuDihUUEnCXvcsNAQ5fH43XjfhKMg==
+"@malkab/node-logger@^1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@malkab/node-logger/-/node-logger-1.1.4.tgz#f74504c1cbfa6cc8a61d493fab912e85e69fae01"
+  integrity sha512-t6sGDQte+/zjvn0Gc5l93pmy5wfolsGmiy1/6SczK8y39s6zT6tsQDloojhqsw2JzpCdZhIEL1NF1F0kMYNapQ==
   dependencies:
     lodash "^4.17.20"
     winston "^3.3.3"
@@ -55,14 +55,14 @@
     rxjs "^6.6.2"
     uid-generator "^2.0.0"
 
-"@malkab/rxpg@^4.1.5":
-  version "4.1.5"
-  resolved "https://registry.yarnpkg.com/@malkab/rxpg/-/rxpg-4.1.5.tgz#ca6f2a969190698009c60a013d393a9fbafd8cba"
-  integrity sha512-Erzqy9aZ0maoHZsvnpohDPbG5z4Cax/i/xwa3tEFoICbN8szoYr2+paLQ1HYfncJYy9Q8ZB5NoKBi+l+MQNmSQ==
+"@malkab/rxpg@^4.1.7":
+  version "4.1.7"
+  resolved "https://registry.yarnpkg.com/@malkab/rxpg/-/rxpg-4.1.7.tgz#8b4528e4d9faaeffb15aa833f8c416ae75bddaba"
+  integrity sha512-ZtwcT85kisRGNhEfV67+9BY9aEHjyIrxe/+rEh7wTNwjZfCP78Ez6+APKLC51a6JfidNb3T63aoiTPFcPcZ7ZA==
   dependencies:
-    "@malkab/ts-utils" "^4.1.5"
+    "@malkab/ts-utils" "^4.1.10"
     lodash "^4.17.20"
-    pg "^8.4.1"
+    pg "^8.5.1"
     pg-native "^3.0.0"
     rxjs "^6.6.2"
 
@@ -83,7 +83,7 @@
     lodash "^4.17.20"
     moment "^2.24.0"
 
-"@malkab/ts-utils@^4.1.10", "@malkab/ts-utils@^4.1.5":
+"@malkab/ts-utils@^4.1.10":
   version "4.1.10"
   resolved "https://registry.yarnpkg.com/@malkab/ts-utils/-/ts-utils-4.1.10.tgz#3f78f33d6d9f050775835208d1282235d84eeaf6"
   integrity sha512-c6uGF3u6CVVce26Z2lijMbUu/SFmpx8ujk/9jQHUFmT/cacfilVEcO12ccIbmv/q3SyZFaYvOhdnapeBPXv0ow==
@@ -3831,7 +3831,7 @@ pg-types@^2.1.0:
     postgres-date "~1.0.4"
     postgres-interval "^1.1.0"
 
-pg@^8.4.1:
+pg@^8.5.1:
   version "8.5.1"
   resolved "https://registry.yarnpkg.com/pg/-/pg-8.5.1.tgz#34dcb15f6db4a29c702bf5031ef2e1e25a06a120"
   integrity sha512-9wm3yX9lCfjvA98ybCyw2pADUivyNWT/yIP4ZcDVpMN0og70BUWYEGXPCTAQdGTAqnytfRADb7NERrY1qxhIqw==
@@ -4884,10 +4884,19 @@ terser@^4.1.2:
     source-map "~0.6.1"
     source-map-support "~0.5.12"
 
-terser@^5.3.4, terser@^5.3.8:
+terser@^5.3.4:
   version "5.3.8"
   resolved "https://registry.yarnpkg.com/terser/-/terser-5.3.8.tgz#991ae8ba21a3d990579b54aa9af11586197a75dd"
   integrity sha512-zVotuHoIfnYjtlurOouTazciEfL7V38QMAOhGqpXDEg6yT13cF4+fEP9b0rrCEQTn+tT46uxgFsTZzhygk+CzQ==
+  dependencies:
+    commander "^2.20.0"
+    source-map "~0.7.2"
+    source-map-support "~0.5.19"
+
+terser@^5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/terser/-/terser-5.4.0.tgz#9815c0839072d5c894e22c6fc508fbe9f5e7d7e8"
+  integrity sha512-3dZunFLbCJis9TAF2VnX+VrQLctRUmt1p3W2kCsJuZE4ZgWqh//+1MZ62EanewrqKoUf4zIaDGZAvml4UDc0OQ==
   dependencies:
     commander "^2.20.0"
     source-map "~0.7.2"

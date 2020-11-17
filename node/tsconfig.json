@@ -1,7 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Node 12",
-
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
@@ -17,7 +16,7 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "noImplicitAny": true,
-    "strict": false,
+    "strict": true,
     "noEmitOnError": true,
     "removeComments": true,
     "preserveConstEnums": true,

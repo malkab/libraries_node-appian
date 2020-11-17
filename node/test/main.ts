@@ -1,4 +1,4 @@
-import { HttpServer, Utils, Auth } from "../src/index";
+import { HttpServer, EnvVarsStorage, JwtToken } from "../src/index";
 
 import { NodeLogger } from "@malkab/node-logger";
 
@@ -15,10 +15,10 @@ import { RxPg } from "@malkab/rxpg"
  * An env vars storage.
  *
  */
-let envVarsStorage: Utils.EnvVarsStorage;
+let envVarsStorage: EnvVarsStorage;
 
 try {
-  envVarsStorage = new Utils.EnvVarsStorage(
+  envVarsStorage = new EnvVarsStorage(
 
     // CONFIGURATION: ADD HERE ENV VARS TO BE
     // READ FROM THE CONTAINER
@@ -105,7 +105,7 @@ const pgConn = new RxPg({
  * Create a token.
  *
  */
-const token: Auth.JwtToken = new Auth.JwtToken("secrest", "1h");
+const token: JwtToken = new JwtToken("secrest", "1h");
 
 /**
  *

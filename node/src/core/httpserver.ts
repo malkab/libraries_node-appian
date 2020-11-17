@@ -467,18 +467,25 @@ any {
  * entry, like for example **analysisrun** fof an entry
  * /operation/run/:analysisId
  *
- * @param success                 The success data.
- * @param httpResponse            The Express HTTP response object
- *                                of the router (tipically the
- *                                res parameter).
- * @param httpRequest             The Express HTTP request object
- *                                of the router (tipically the
- *                                req parameter).
- * @param log                     If there is a log object, the error will be
- *                                logged to the error channel.
- * @param doNotEchoBody           Do not echo the body, for example
- *                                when dealing with sensitive info
- *                                like passwords.
+ * @param success
+ * The success data.
+ *
+ * @param httpResponse
+ * The Express HTTP response object of the router (tipically the res parameter).
+ *
+ * @param httpRequest
+ * The Express HTTP request object of the router (tipically the req parameter).
+ *
+ * @param log
+ * If there is a log object, the error will be logged to the error channel.
+ *
+ * @param fileName
+ * An optional file name. If one is provided, the response will be downloaded as
+ * a file.
+ *
+ * @param doNotEchoBody
+ * Do not echo the body, for example when dealing with sensitive info like
+ * passwords.
  *
  */
 export function httpSuccess({
@@ -486,12 +493,14 @@ export function httpSuccess({
     httpResponse,
     httpRequest,
     log,
+    fileName = undefined,
     verbose = true
   }: {
     success: ApiSuccess;
     httpResponse: Response;
     httpRequest: Request;
     log?: NodeLogger;
+    fileName?: string;
     verbose?: boolean;
 }): any {
 
@@ -526,7 +535,19 @@ export function httpSuccess({
 
   }
 
-  return httpResponse.status(200).json(res);
+  // Check for a file name, for downloading a file
+  if (fileName) {
+
+    httpResponse.setHeader('Content-disposition',
+      `attachment; filename=${fileName}`);
+
+    return httpResponse.status(200).json(res);
+
+  } else {
+
+    return httpResponse.status(200).json(res);
+
+  }
 
 }
 
@@ -537,11 +558,11 @@ export function httpSuccess({
  */
 export function processResponse({
     unexpectedErrorMessage = "unexpected error",
-    verbose = false
+    verbose = true
   }: {
     unexpectedErrorMessage?: string;
     verbose?: boolean
-}): (req: Request, res: Response) => void {
+} = {}): (req: Request, res: Response) => void {
 
   return (req: Request, res: Response): void => {
 
@@ -569,7 +590,9 @@ export function processResponse({
         success: res.appianSuccess,
         httpRequest: req,
         httpResponse: res,
-        log: res.appianLog
+        log: res.appianLog,
+        fileName: res.appianSuccess.fileName,
+        verbose: verbose
       });
 
     // An observable is reported
@@ -594,8 +617,11 @@ export function processResponse({
             success: new ApiSuccess({
               module: res.appianModule,
               payload: responsePayload.payload,
-              logPayload: responsePayload.logPayload
-            })
+              logPayload: responsePayload.logPayload,
+              fileName: responsePayload.fileName
+            }),
+            fileName: responsePayload.fileName,
+            verbose: verbose
           })
 
         },

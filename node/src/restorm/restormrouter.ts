@@ -446,7 +446,7 @@ export function generateDefaultRestRouters<T>({
    * GET.
    *
    */
-  if (exposeGetMethod) {
+  if (exposeGetMethod && getMethod$) {
 
     router.router.get(
       `${baseUrl}/${keysUrlParameters.join("/")}`,
