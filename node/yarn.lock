@@ -41,10 +41,10 @@
     winston "^3.3.3"
     winston-daily-rotate-file "^4.5.0"
 
-"@malkab/node-utils@1.5.18":
-  version "1.5.18"
-  resolved "https://registry.yarnpkg.com/@malkab/node-utils/-/node-utils-1.5.18.tgz#2439111ca0a1a2f693703b4ac39d4dd9056b9669"
-  integrity sha512-5oWpTxXZ9UvY25HCrTKfl1H96AyL1ZYAZoai07zoM8Uuju+qchf+phSoyOMKB3HMHDf1bQdWp+Nh4fPa4Jfgrg==
+"@malkab/node-utils@^1.5.19":
+  version "1.5.19"
+  resolved "https://registry.yarnpkg.com/@malkab/node-utils/-/node-utils-1.5.19.tgz#a71e83f74291058bb5e3362cf0eb2018e72230f8"
+  integrity sha512-hRX/lyL+gbgak2N6MvzJRM2R4F8Ub47yVRhP66oe6B0psX+m1HpYOe112CmvmyPusZkqY0xE/0+b0ZDcizGAMA==
   dependencies:
     bcryptjs "^2.4.3"
     fs-extra "^9.0.1"

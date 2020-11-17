@@ -1,6 +1,6 @@
 {
   "name": "@malkab/appian",
-  "version": "3.7.5",
+  "version": "3.7.7",
   "description": "A very opinionated, convenience wrapper around Express and other packages for API development.",
   "scope": "@malkab",
   "author": {
@@ -73,7 +73,7 @@
     "webpack-node-externals": "^2.5.2"
   },
   "dependencies": {
-    "@malkab/node-utils": "1.5.18",
+    "@malkab/node-utils": "^1.5.19",
     "@malkab/ts-utils": "^4.1.10",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",

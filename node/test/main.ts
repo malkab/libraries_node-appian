@@ -1,4 +1,6 @@
-import { HttpServer, EnvVarsStorage, JwtToken } from "../src/index";
+import { HttpServer, JwtToken } from "../src/index";
+
+import { EnvVarsStorage } from "@malkab/node-utils";
 
 import { NodeLogger } from "@malkab/node-logger";
 
