@@ -558,7 +558,7 @@ export function httpSuccess({
  */
 export function processResponse({
     unexpectedErrorMessage = "unexpected error",
-    verbose = true
+    verbose = false
   }: {
     unexpectedErrorMessage?: string;
     verbose?: boolean
