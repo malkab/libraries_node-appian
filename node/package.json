@@ -1,6 +1,6 @@
 {
   "name": "@malkab/appian",
-  "version": "3.7.8",
+  "version": "3.7.9",
   "description": "A very opinionated, convenience wrapper around Express and other packages for API development.",
   "scope": "@malkab",
   "author": {

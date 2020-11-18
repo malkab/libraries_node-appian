@@ -494,20 +494,20 @@ export function httpSuccess({
     httpRequest,
     log,
     fileName = undefined,
-    verbose = true
+    standardResponse = true
   }: {
     success: ApiSuccess;
     httpResponse: Response;
     httpRequest: Request;
     log?: NodeLogger;
     fileName?: string;
-    verbose?: boolean;
+    standardResponse?: boolean;
 }): any {
 
   let res: any;
 
   // Verbose or not verbose?
-  if(!verbose) {
+  if(!standardResponse) {
 
     res = {
       ...success.payload
@@ -555,13 +555,28 @@ export function httpSuccess({
  *
  * Final processing or responses.
  *
+ * @param unexpectedErrorMessage
+ * The message to be returned in case an unexpected error happens. Defaults to
+ * **unexpected server error**.
+ *
+ * @param standardResponse
+ * A flag determining if a standard response should be returned that includes
+ * the url and path of the request and encapsulates the process payload into a
+ * "success" item. **true** by default. If false, the contents of the payload
+ * will be returned.
+ *
+ * @param consoleOut
+ * A flag to echo to the console. Defaults to **false**.
+ *
  */
 export function processResponse({
-    unexpectedErrorMessage = "unexpected error",
-    verbose = false
+    unexpectedErrorMessage = "unexpected server error",
+    standardResponse = true,
+    consoleOut = false
   }: {
     unexpectedErrorMessage?: string;
-    verbose?: boolean
+    standardResponse?: boolean,
+    consoleOut?: boolean
 } = {}): (req: Request, res: Response) => void {
 
   return (req: Request, res: Response): void => {
@@ -570,7 +585,7 @@ export function processResponse({
     if (res.appianError !== undefined) {
 
       // Verbose?
-      if (verbose) { console.log(res.appianError); }
+      if (consoleOut) { console.log(res.appianError); }
 
       httpError({
         error: res.appianError,
@@ -584,7 +599,7 @@ export function processResponse({
     } else if (res.appianSuccess !== undefined) {
 
       // Verbose?
-      if (verbose) { console.log(res.appianSuccess); }
+      if (consoleOut) { console.log(res.appianSuccess); }
 
       httpSuccess({
         success: res.appianSuccess,
@@ -592,7 +607,7 @@ export function processResponse({
         httpResponse: res,
         log: res.appianLog,
         fileName: res.appianSuccess.fileName,
-        verbose: verbose
+        standardResponse: standardResponse
       });
 
     // An observable is reported
@@ -603,7 +618,7 @@ export function processResponse({
         (responsePayload: IResponsePayload) => {
 
           // Verbose?
-          if (verbose) { console.log(responsePayload); }
+          if (consoleOut) { console.log(responsePayload); }
 
           // Make logPayload = payload if not present
           if (responsePayload.logPayload === undefined) {
@@ -621,7 +636,7 @@ export function processResponse({
               fileName: responsePayload.fileName
             }),
             fileName: responsePayload.fileName,
-            verbose: verbose
+            standardResponse: standardResponse
           })
 
         },
@@ -629,7 +644,7 @@ export function processResponse({
         (error: ApiError | any) => {
 
           // Verbose?
-          if (verbose) { console.log(error); }
+          if (consoleOut) { console.log(error); }
 
           // The errorFactory use here is in charge of analyzing if the provided
           // error is an ApiError or an unexpected one
