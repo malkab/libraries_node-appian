@@ -33,7 +33,7 @@ export class Pg {
 
   public pgCreateATable$(): Observable<QueryResult> {
 
-    return this._pg.executeQuery$(`
+    return this._pg.executeParamQuery$(`
       drop table if exists a;
 
       create table a(a integer, b integer);
@@ -43,7 +43,7 @@ export class Pg {
 
   public pgInsertA$(value: number): Observable<QueryResult> {
 
-    return this._pg.executeQuery$(`
+    return this._pg.executeParamQuery$(`
       insert into a values (${value}, ${value});
       insert into a values (${value} + 1, ${value} + 1);
     `);

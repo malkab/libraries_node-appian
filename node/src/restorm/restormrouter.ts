@@ -221,22 +221,22 @@ export function generateDefaultRestRouters<T>({
       request.body,
     postIResponsePayload =
       ({ object: object, request: request, response: response }) =>
-      <IResponsePayload>{ payload: object },
+        rx.of(<IResponsePayload>{ payload: object }),
     postPrefixMiddlewares,
     postSuffixMiddlewares,
     getIResponsePayload =
       ({ object: object, request: request, response: response }) =>
-      <IResponsePayload>{ payload: object },
+        rx.of(<IResponsePayload>{ payload: object }),
     getPrefixMiddlewares,
     getSuffixMiddlewares,
     patchIResponsePayload =
       ({ object: object, request: request, response: response }) =>
-      <IResponsePayload>{ payload: object },
+        rx.of(<IResponsePayload>{ payload: object }),
     patchPrefixMiddlewares,
     patchSuffixMiddlewares,
     deleteIResponsePayload =
       ({ object: object, request: request, response: response }) =>
-      <IResponsePayload>{ payload: object },
+        rx.of(<IResponsePayload>{ payload: object }),
     deletePrefixMiddlewares,
     deleteSuffixMiddlewares
   }: {
@@ -277,22 +277,22 @@ export function generateDefaultRestRouters<T>({
       { error: any; object?: T, request: Request; response: Response; }) => any;
     postIResponsePayload?: ({ object, request, response }:
       { object: T; request: Request; response: Response; }) =>
-      IResponsePayload;
+        rx.Observable<IResponsePayload>;
     postPrefixMiddlewares?: any[];
     postSuffixMiddlewares?: any[];
     getIResponsePayload?: ({ object, request, response }:
       { object: T; request: Request; response: Response; }) =>
-      IResponsePayload;
+        rx.Observable<IResponsePayload>;
     getPrefixMiddlewares?: any[];
     getSuffixMiddlewares?: any[];
     patchIResponsePayload?: ({ object, request, response }:
       { object: T; request: Request; response: Response; }) =>
-      IResponsePayload;
+        rx.Observable<IResponsePayload>;
     patchPrefixMiddlewares?: any[];
     patchSuffixMiddlewares?: any[];
     deleteIResponsePayload?: ({ object, request, response }:
       { object: T; request: Request; response: Response; }) =>
-      IResponsePayload;
+        rx.Observable<IResponsePayload>;
     deletePrefixMiddlewares?: any[];
     deleteSuffixMiddlewares?: any[];
 }): void {
@@ -424,7 +424,7 @@ export function generateDefaultRestRouters<T>({
           }),
 
           // Successfull response
-          rxo.map((o: any) => {
+          rxo.concatMap((o: any) => {
 
             return postIResponsePayload(
               { object: object, request: request, response: response });
@@ -510,7 +510,7 @@ export function generateDefaultRestRouters<T>({
           }),
 
           // Push a successfull response
-          rxo.map((object: any) => {
+          rxo.concatMap((object: any) => {
 
             return getIResponsePayload(
               { object: object, request: request, response: response });
@@ -611,7 +611,7 @@ export function generateDefaultRestRouters<T>({
           }),
 
           // Push the successfull response
-          rxo.map((o: any) => {
+          rxo.concatMap((o: any) => {
 
             return patchIResponsePayload(
               { object: object, request: request, response: response });
@@ -696,7 +696,7 @@ export function generateDefaultRestRouters<T>({
           }),
 
           // Push a successfull response
-          rxo.map((o: any) => {
+          rxo.concatMap((o: any) => {
 
             return deleteIResponsePayload(
               { object: object, request: request, response: response });

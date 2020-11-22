@@ -1,21 +1,21 @@
 {
 	"info": {
-		"_postman_id": "672bce02-7172-4bc1-a368-600751a2ab6d",
-		"name": "Appian 1.0.0",
+		"_postman_id": "d0b33e2d-e90d-418d-8f07-147ee16cca9d",
+		"name": "Appian Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "/route/test",
+			"name": "/test",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/route/test",
+					"raw": "{{host}}:{{port}}/route/test",
 					"host": [
-						"{{HOST}}"
+						"{{host}}"
 					],
-					"port": "{{PORT}}",
+					"port": "{{port}}",
 					"path": [
 						"route",
 						"test"
@@ -25,16 +25,35 @@
 			"response": []
 		},
 		{
-			"name": "/route/testnotautomatic",
+			"name": "/testdownload",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/route/testnotautomatic",
+					"raw": "{{host}}:{{port}}/route/testdownload",
 					"host": [
-						"{{HOST}}"
+						"{{host}}"
 					],
-					"port": "{{PORT}}",
+					"port": "{{port}}",
+					"path": [
+						"route",
+						"testdownload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/testnotautomatic",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}:{{port}}/route/testnotautomatic",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
 					"path": [
 						"route",
 						"testnotautomatic"
@@ -44,16 +63,16 @@
 			"response": []
 		},
 		{
-			"name": "/route/testerror",
+			"name": "/testerror",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/route/testerror",
+					"raw": "{{host}}:{{port}}/route/testerror",
 					"host": [
-						"{{HOST}}"
+						"{{host}}"
 					],
-					"port": "{{PORT}}",
+					"port": "{{port}}",
 					"path": [
 						"route",
 						"testerror"
@@ -63,16 +82,16 @@
 			"response": []
 		},
 		{
-			"name": "/route/testerrornotautomatic",
+			"name": "/testerrornotautomatic",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/route/testerrornotautomatic",
+					"raw": "{{host}}:{{port}}/route/testerrornotautomatic",
 					"host": [
-						"{{HOST}}"
+						"{{host}}"
 					],
-					"port": "{{PORT}}",
+					"port": "{{port}}",
 					"path": [
 						"route",
 						"testerrornotautomatic"
@@ -82,7 +101,7 @@
 			"response": []
 		},
 		{
-			"name": "/route/postimage",
+			"name": "/postimage",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -92,16 +111,19 @@
 						{
 							"key": "image",
 							"type": "file",
-							"src": "/home/malkab/Desktop/File 18-08-2020, 05 08 52.jpeg"
+							"src": "/home/git/sunnsaas/sunnsaas/assets/file-uploads-testing/user_photos/user_a.png"
 						}
-					]
+					],
+					"options": {
+						"formdata": {}
+					}
 				},
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/route/postimage",
+					"raw": "{{host}}:{{port}}/route/postimage",
 					"host": [
-						"{{HOST}}"
+						"{{host}}"
 					],
-					"port": "{{PORT}}",
+					"port": "{{port}}",
 					"path": [
 						"route",
 						"postimage"
@@ -111,7 +133,7 @@
 			"response": []
 		},
 		{
-			"name": "/route/postimagememory",
+			"name": "/postimagememory",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -121,16 +143,19 @@
 						{
 							"key": "image",
 							"type": "file",
-							"src": "/home/malkab/Desktop/maxresdefault.jpg"
+							"src": "/home/git/sunnsaas/sunnsaas/assets/file-uploads-testing/user_photos/user_a.png"
 						}
-					]
+					],
+					"options": {
+						"formdata": {}
+					}
 				},
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/route/postimagememory",
+					"raw": "{{host}}:{{port}}/route/postimagememory",
 					"host": [
-						"{{HOST}}"
+						"{{host}}"
 					],
-					"port": "{{PORT}}",
+					"port": "{{port}}",
 					"path": [
 						"route",
 						"postimagememory"
@@ -140,7 +165,7 @@
 			"response": []
 		},
 		{
-			"name": "/route/postimage/:name",
+			"name": "/postimage/:name",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -150,16 +175,24 @@
 						{
 							"key": "image",
 							"type": "file",
-							"src": "/home/malkab/Desktop/maxresdefault.jpg"
+							"src": "/home/git/sunnsaas/sunnsaas/assets/file-uploads-testing/user_photos/user_d.png"
+						},
+						{
+							"key": "bodyKey",
+							"value": "bodyKey",
+							"type": "text"
 						}
-					]
+					],
+					"options": {
+						"formdata": {}
+					}
 				},
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/route/postimage/:name",
+					"raw": "{{host}}:{{port}}/route/postimage/:name",
 					"host": [
-						"{{HOST}}"
+						"{{host}}"
 					],
-					"port": "{{PORT}}",
+					"port": "{{port}}",
 					"path": [
 						"route",
 						"postimage",
@@ -167,8 +200,10 @@
 					],
 					"variable": [
 						{
+							"id": "c776d89f-29b0-43fe-ac61-4af546bb500d",
 							"key": "name",
-							"value": "newname"
+							"value": "value",
+							"type": "string"
 						}
 					]
 				}
@@ -176,43 +211,86 @@
 			"response": []
 		},
 		{
-			"name": "/route/observable/success/:key",
+			"name": "/observable/success",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
 				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [],
+					"options": {
+						"urlencoded": {}
+					}
+				},
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/route/observable/success/:key",
+					"raw": "{{host}}:{{port}}/route/observable/success",
 					"host": [
-						"{{HOST}}"
+						"{{host}}"
 					],
-					"port": "{{PORT}}",
+					"port": "{{port}}",
 					"path": [
 						"route",
 						"observable",
-						"success",
-						":key"
-					],
-					"variable": [
-						{
-							"key": "key",
-							"value": "theKey"
-						}
+						"success"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "/route/observable/unexpected/:key",
+			"name": "/observable/successdownload",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
 				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [],
+					"options": {
+						"urlencoded": {}
+					}
+				},
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/route/observable/unexpected/:key",
+					"raw": "{{host}}:{{port}}/route/observable/successdownload",
 					"host": [
-						"{{HOST}}"
+						"{{host}}"
 					],
-					"port": "{{PORT}}",
+					"port": "{{port}}",
+					"path": [
+						"route",
+						"observable",
+						"successdownload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/observable/unexpected/:key",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [],
+					"options": {
+						"urlencoded": {}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/route/observable/unexpected/:key",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
 					"path": [
 						"route",
 						"observable",
@@ -221,8 +299,10 @@
 					],
 					"variable": [
 						{
+							"id": "c7bd5378-8ad0-4cf6-b8d0-7f56f79aa373",
 							"key": "key",
-							"value": "theKey"
+							"value": "value",
+							"type": "string"
 						}
 					]
 				}
@@ -230,16 +310,37 @@
 			"response": []
 		},
 		{
-			"name": "/route/observable/expected/:key",
+			"name": "/observable/expected/:key",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": {
-					"raw": "{{HOST}}:{{PORT}}/route/observable/expected/:key",
-					"host": [
-						"{{HOST}}"
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "body_a",
+							"value": "0",
+							"type": "text"
+						},
+						{
+							"key": "body_b",
+							"value": "1",
+							"type": "text"
+						}
 					],
-					"port": "{{PORT}}",
+					"options": {
+						"urlencoded": {}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/route/observable/expected/:key",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
 					"path": [
 						"route",
 						"observable",
@@ -248,8 +349,10 @@
 					],
 					"variable": [
 						{
+							"id": "0ce8707a-83fb-4f02-b1d6-6a9cf2dbce4e",
 							"key": "key",
-							"value": "theKey"
+							"value": "value",
+							"type": "string"
 						}
 					]
 				}
@@ -257,16 +360,29 @@
 			"response": []
 		},
 		{
-			"name": "/route/persistence/:key",
+			"name": "/persistence/:key",
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
-				"url": {
-					"raw": "{{HOST}}:{{PORT}}/route/persistence/:key",
-					"host": [
-						"{{HOST}}"
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "key",
+							"value": "value",
+							"type": "text"
+						}
 					],
-					"port": "{{PORT}}",
+					"options": {
+						"urlencoded": {}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/route/persistence/:key",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
 					"path": [
 						"route",
 						"persistence",
@@ -274,8 +390,10 @@
 					],
 					"variable": [
 						{
+							"id": "9813abbc-5577-4863-b398-f6959a637834",
 							"key": "key",
-							"value": "55"
+							"value": "5",
+							"type": "string"
 						}
 					]
 				}
@@ -283,16 +401,18 @@
 			"response": []
 		},
 		{
-			"name": "/route/login",
+			"name": "/login",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "18018b13-e75d-40ae-ad5f-26d100469654",
+						"id": "e0dfcc9b-6b9b-449f-aba2-a4ec14e1feaa",
 						"exec": [
-							"var jsonData = pm.response.json();",
+							"var json = pm.response.json()",
 							"",
-							"pm.environment.set(\"token\", jsonData.success.token);"
+							"pm.globals.set(\"token\", json.success.token);",
+							"",
+							"console.log(\"D: \", pm.response);"
 						],
 						"type": "text/javascript"
 					}
@@ -314,14 +434,17 @@
 							"value": "pass",
 							"type": "text"
 						}
-					]
+					],
+					"options": {
+						"urlencoded": {}
+					}
 				},
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/route/login",
+					"raw": "{{host}}:{{port}}/route/login",
 					"host": [
-						"{{HOST}}"
+						"{{host}}"
 					],
-					"port": "{{PORT}}",
+					"port": "{{port}}",
 					"path": [
 						"route",
 						"login"
@@ -331,7 +454,223 @@
 			"response": []
 		},
 		{
-			"name": "/route/auth",
+			"name": "/logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b9f45ba8-36ae-4c99-832b-0cf501e243d9",
+						"exec": [
+							"var json = pm.response.json()",
+							"",
+							"pm.globals.set(\"token\", json.success.token);",
+							"",
+							"console.log(\"D: \", pm.response);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "user",
+							"value": "user",
+							"type": "text"
+						},
+						{
+							"key": "pass",
+							"value": "pass",
+							"type": "text"
+						}
+					],
+					"options": {
+						"urlencoded": {}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/route/logout",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"route",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "029a63be-a31b-4db2-b0a1-80620a62cce2",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [],
+					"options": {
+						"urlencoded": {}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/route/auth",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"route",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/orm/:id0/:id1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4129fd49-608c-4a00-a5e0-4fdd87c7422f",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/home/git/sunnsaas/sunnsaas/assets/file-uploads-testing/user_photos/user_a.png"
+						},
+						{
+							"key": "a",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "b",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "c",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "d",
+							"value": "1",
+							"type": "text"
+						}
+					],
+					"options": {
+						"formdata": {}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/route/orm/:id0/:id1",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"route",
+						"orm",
+						":id0",
+						":id1"
+					],
+					"variable": [
+						{
+							"id": "ce58f403-9079-4548-94b4-9c6e74bce485",
+							"key": "id0",
+							"value": "10",
+							"type": "string"
+						},
+						{
+							"id": "a2076ae9-1e7c-49d9-87de-dbbe2d238425",
+							"key": "id1",
+							"value": "0",
+							"type": "string"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/orm/:a/:b",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7d064e3e-fad2-4223-984d-230af780a48a",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -346,14 +685,169 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/route/auth",
+					"raw": "{{host}}:{{port}}/route/orm/:a/:b",
 					"host": [
-						"{{HOST}}"
+						"{{host}}"
 					],
-					"port": "{{PORT}}",
+					"port": "{{port}}",
 					"path": [
 						"route",
-						"auth"
+						"orm",
+						":a",
+						":b"
+					],
+					"variable": [
+						{
+							"key": "a",
+							"value": "2"
+						},
+						{
+							"key": "b",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/orm/:a/:b",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3f82b1a6-99e5-40d6-87da-5b6a6217631e",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/home/git/sunnsaas/sunnsaas/assets/file-uploads-testing/user_photos/user_c.png"
+						},
+						{
+							"key": "a",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "b",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "c",
+							"value": "yuyu",
+							"type": "text"
+						},
+						{
+							"key": "d",
+							"value": "3",
+							"type": "text"
+						}
+					],
+					"options": {
+						"formdata": {}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/route/orm/:a/:b",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"route",
+						"orm",
+						":a",
+						":b"
+					],
+					"variable": [
+						{
+							"key": "a",
+							"value": "2"
+						},
+						{
+							"key": "b",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/orm/:id0/:id1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ec8ce102-ac08-4662-a170-95fed50266b3",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}:{{port}}/route/orm/:id0/:id1",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"route",
+						"orm",
+						":id0",
+						":id1"
+					],
+					"variable": [
+						{
+							"id": "9c70aa81-ff8b-4dca-b671-eaedf3f1f50d",
+							"key": "id0",
+							"value": "7",
+							"type": "string"
+						},
+						{
+							"id": "3c9e08a3-4e88-46a7-ab1f-341521d59c76",
+							"key": "id1",
+							"value": "4",
+							"type": "string"
+						}
 					]
 				}
 			},

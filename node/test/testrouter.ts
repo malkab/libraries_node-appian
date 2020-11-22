@@ -236,9 +236,9 @@ export class TestRouter extends ApiRouter {
       (req: Request, res: Response, next: any) => {
 
         res.appianError = new ApiError({
-          module: this.module,
-          httpStatus: StatusCodes.CONFLICT,
-          payload: { "message": "forced" },
+          appianErrorModule: this.module,
+          appianErrorHttpStatus: StatusCodes.CONFLICT,
+          appianErrorPayload: { "message": "forced" },
           error: new Error("This is a common error")
         })
 
@@ -260,9 +260,9 @@ export class TestRouter extends ApiRouter {
 
         httpError({
           error: new ApiError({
-            module: this.module,
-            httpStatus: StatusCodes.CONFLICT,
-            payload: { "error": "forced" },
+            appianErrorModule: this.module,
+            appianErrorHttpStatus: StatusCodes.CONFLICT,
+            appianErrorPayload: { "error": "forced" },
             error: new Error("This is a common error")
           }),
           httpRequest: req,
@@ -376,7 +376,7 @@ export class TestRouter extends ApiRouter {
         next();
 
       },
-      processResponse({ verbose: false })
+      processResponse({ consoleOut: false })
     );
 
     /**
@@ -410,7 +410,7 @@ export class TestRouter extends ApiRouter {
         next();
 
       },
-      processResponse({verbose: false})
+      processResponse({ consoleOut: false })
     );
 
     /**
@@ -478,11 +478,11 @@ export class TestRouter extends ApiRouter {
 
             // This is an expected error
             throw new ApiError({
-              module: this.module,
+              appianErrorModule: this.module,
               error: new Error("expected error"),
-              httpStatus: StatusCodes.CONFLICT,
-              payload: { a: 0, b: 1, c: 2},
-              logPayload: { a: 0 }
+              appianErrorHttpStatus: StatusCodes.CONFLICT,
+              appianErrorPayload: { a: 0, b: 1, c: 2},
+              appianErrorLogPayload: { a: 0 }
             })
 
             // This is a successfull response, never reached
@@ -539,7 +539,7 @@ export class TestRouter extends ApiRouter {
         next();
 
       },
-      processResponse({ verbose: false })
+      processResponse({ consoleOut: false })
     );
 
     /**
@@ -654,14 +654,14 @@ export class TestRouter extends ApiRouter {
       // notFoundErrorPayload: ({ error: e}) =>
       //   { return { error: "NOT FOUND" } },
 
-      // postIResponsePayload: ({ object: o }) =>
-      //   { return <IResponsePayload>{ payload: { a: o.a, b: o.b } } },
-      // getIResponsePayload: ({ object: o }) =>
-      //   { return <IResponsePayload>{ payload: { a: o.a, b: o.b, ee: o.c+o.d }}},
-      // patchIResponsePayload: ({ object: o }) =>
-      //   { return <IResponsePayload>{ payload: { a: o.a, b: o.b, ee44: o.c+o.d }}},
-      // deleteIResponsePayload: ({ object: o }) =>
-      //   { return <IResponsePayload>{ payload: { a: o.a, b: o.b, ehhe44: o.c+o.d }}},
+      postIResponsePayload: ({ object: o }) =>
+        { return rx.of(<IResponsePayload>{ payload: { a: o.a, b: o.b } }) },
+      getIResponsePayload: ({ object: o }) =>
+        { return rx.of(<IResponsePayload>{ payload: { a: o.a, b: o.b, ee: o.c+o.d }})},
+      patchIResponsePayload: ({ object: o }) =>
+        { return rx.of(<IResponsePayload>{ payload: { a: o.a, b: o.b, ee44: o.c+o.d }})},
+      deleteIResponsePayload: ({ object: o }) =>
+        { return rx.of(<IResponsePayload>{ payload: { a: o.a, b: o.b, ehhe44: o.c+o.d }})},
 
       // prefixMiddlewares: [
       //   // Auth.bearerAuth(this._jwtToken, this._authentication),
