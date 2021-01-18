@@ -1,4 +1,8 @@
-import { generateDefaultRestRouters, bearerAuth, MulterMemory, Multer, JwtToken, Request, Response, ApiError, ApiSuccess, IResponsePayload, ApiRouter, addMetadata, httpError, httpSuccess, processResponse } from "../src/index";
+import {
+  generateDefaultRestRouters, bearerAuth, MulterMemory, Multer, JwtToken,
+  Request, Response, ApiError, ApiSuccess, IResponsePayload, ApiRouter,
+  addMetadata, httpError, httpSuccess, processResponse
+} from "../src/index";
 
 import { StatusCodes } from "http-status-codes";
 
@@ -139,7 +143,7 @@ export class TestRouter extends ApiRouter {
       addMetadata(this.module, this.log),
       (req: Request, res: Response, next: any) => {
 
-        res.appianSuccess = new ApiSuccess({
+        (<any>res).appianSuccess = new ApiSuccess({
           module: this.module,
           payload: { a: 0, b: 1, c: 2 },
           logPayload: { a: 0 }
@@ -161,7 +165,7 @@ export class TestRouter extends ApiRouter {
       addMetadata(this.module, this.log),
       (req: Request, res: Response, next: any) => {
 
-        res.appianSuccess = new ApiSuccess({
+        (<any>res).appianSuccess = new ApiSuccess({
           module: this.module,
           payload: { a: 0, b: 1, c: 2 },
           logPayload: { a: 0 },
@@ -235,7 +239,7 @@ export class TestRouter extends ApiRouter {
       addMetadata(this.module, this.log),
       (req: Request, res: Response, next: any) => {
 
-        res.appianError = new ApiError({
+        (<any>res).appianError = new ApiError({
           appianErrorModule: this.module,
           appianErrorHttpStatus: StatusCodes.CONFLICT,
           appianErrorPayload: { "message": "forced" },
@@ -286,7 +290,7 @@ export class TestRouter extends ApiRouter {
       multerFile.multer.single("image"),
       (req: Request, res: Response, next: any) => {
 
-        res.appianSuccess = new ApiSuccess({
+        (<any>res).appianSuccess = new ApiSuccess({
           module: this.module,
           payload: { test: "ok", name: req.file.filename },
         });
@@ -308,7 +312,7 @@ export class TestRouter extends ApiRouter {
       multerMemory.multer.single("image"),
       (req: Request, res: Response, next: any) => {
 
-        res.appianSuccess = new ApiSuccess({
+        (<any>res).appianSuccess = new ApiSuccess({
           module: this.module,
           payload: { test: "ok", size: req.file.size }
         });
@@ -330,7 +334,7 @@ export class TestRouter extends ApiRouter {
       multerFile.multer.single("image"),
       (req: Request, res: Response, next: any) => {
 
-        res.appianSuccess = new ApiSuccess({
+        (<any>res).appianSuccess = new ApiSuccess({
           module: this.module,
           payload: { test: "ok", name: req.file.filename,
             param: req.params.name }
@@ -356,7 +360,7 @@ export class TestRouter extends ApiRouter {
       addMetadata(this.module, this.log),
       (req: Request, res: Response, next: any) => {
 
-        res.appianObservable = rx.timer(1000)
+        (<any>res).appianObservable = rx.timer(1000)
         .pipe(
 
           rxo.take(1),
@@ -389,7 +393,7 @@ export class TestRouter extends ApiRouter {
       addMetadata(this.module, this.log),
       (req: Request, res: Response, next: any) => {
 
-        res.appianObservable = rx.timer(1000)
+        (<any>res).appianObservable = rx.timer(1000)
         .pipe(
 
           rxo.take(1),
@@ -401,6 +405,43 @@ export class TestRouter extends ApiRouter {
               payload: { a: 44, b: 22 },
               logPayload: { a: 44 },
               fileName: "fromObservable.json"
+            };
+
+          })
+
+        )
+
+        next();
+
+      },
+      processResponse({ consoleOut: false })
+    );
+
+    /**
+     *
+     * Download a binary file at the hard disk with observables. Just add any
+     * needed payload to the IResponsePayload and the path to the file to
+     * download. The path is logged into the payload automatically.
+     *
+     */
+    this.router.get(
+      "/observable/successdownloadfile",
+      addMetadata(this.module, this.log),
+      (req: Request, res: Response, next: any) => {
+
+        (<any>res).appianObservable = rx.timer(1000)
+        .pipe(
+
+          rxo.take(1),
+
+          rxo.map((o: any) => {
+
+            const downFile: string = "/test_files_for_downloading/image.jpg";
+
+            // This is a successfull response
+            return <IResponsePayload>{
+              payload: { anyOtherPayload: 99 },
+              downloadFile: downFile
             };
 
           })
@@ -427,7 +468,7 @@ export class TestRouter extends ApiRouter {
       addMetadata(this.module, this.log),
       (req: Request, res: Response, next: any) => {
 
-        res.appianObservable = rx.timer(1000)
+        (<any>res).appianObservable = rx.timer(1000)
         .pipe(
 
           rxo.take(1),
@@ -469,7 +510,7 @@ export class TestRouter extends ApiRouter {
       addMetadata(this.module, this.log),
       (req: Request, res: Response, next: any) => {
 
-        res.appianObservable = rx.timer(1000)
+        (<any>res).appianObservable = rx.timer(1000)
         .pipe(
 
           rxo.take(1),
@@ -511,7 +552,7 @@ export class TestRouter extends ApiRouter {
       addMetadata(this.module, this.log),
       (req: Request, res: Response, next: any) => {
 
-        res.appianObservable = this._pg.pgCreateATable$()
+        (<any>res).appianObservable = this._pg.pgCreateATable$()
         .pipe(
 
           rxo.concatMap((o: QueryResult) => {
@@ -555,7 +596,7 @@ export class TestRouter extends ApiRouter {
         const user: string = req.body.user;
         const pass: string = req.body.pass;
 
-        res.appianSuccess = new ApiSuccess({
+        (<any>res).appianSuccess = new ApiSuccess({
           payload: { token:
             this._jwtToken.createToken({ user: user, pass: pass }) },
           module: this.module,
@@ -582,7 +623,7 @@ export class TestRouter extends ApiRouter {
         res.clearCookie("sunnsaas",
           { path: "/sunnsaas/authorization/refreshtoken" });
 
-        res.appianSuccess = new ApiSuccess({
+        (<any>res).appianSuccess = new ApiSuccess({
           payload: { logout: "ok" },
           module: this.module,
         })
@@ -604,8 +645,8 @@ export class TestRouter extends ApiRouter {
       addMetadata(this.module, this.log),
       (req: Request, res: Response, next: any) => {
 
-        res.appianSuccess = new ApiSuccess({
-          payload: { a: 0, auth: req.appianAuth },
+        (<any>res).appianSuccess = new ApiSuccess({
+          payload: { a: 0, auth: (<any>req).appianAuth },
           module: this.module,
         })
 

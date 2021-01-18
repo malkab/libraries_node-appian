@@ -53,6 +53,7 @@ VOLUMES=(
   $(pwd)/logs:/logs
   ~/.npmrc:/root/.npmrc
   ~/.npmrc:/home/node/.npmrc
+  $(pwd)/../test_files_for_downloading/:/test_files_for_downloading/:ro
 )
 # Volatile (-ti --rm)
 VOLATILE=true

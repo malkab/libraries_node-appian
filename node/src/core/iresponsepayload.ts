@@ -24,4 +24,10 @@ export interface IResponsePayload {
    *
    */
   fileName?: string;
+  /**
+   *
+   * Download a binary file from disk, specify a path.
+   *
+   */
+  downloadFile?: string;
 }

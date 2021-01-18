@@ -5,17 +5,11 @@ windows:
 
   - appian: >
       clear ;
-      sleep 5 ;
-      . mlkcontext common ;
-      cd docker ;
-      ./020-node-interactive.sh
+      cd docker
 
   - psql: >
       clear ;
-      sleep 10 ;
-      . mlkcontext common ;
-      cd docker ;
-      ./100-pg-psql.sh
+      cd docker
 
   - compose: >
       clear ;

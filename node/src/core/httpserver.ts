@@ -625,19 +625,42 @@ export function processResponse({
             responsePayload.logPayload = responsePayload.payload;
           }
 
-          httpSuccess({
-            httpRequest: req,
-            httpResponse: res,
-            log: res.appianLog,
-            success: new ApiSuccess({
-              module: res.appianModule,
-              payload: responsePayload.payload,
-              logPayload: responsePayload.logPayload,
-              fileName: responsePayload.fileName
-            }),
-            fileName: responsePayload.fileName,
-            standardResponse: standardResponse
-          })
+          // Check if a downloadFile is present. If not, normal httpSuccess to
+          // send the response.
+          if (responsePayload.downloadFile) {
+
+            // Add to the payload the file name to download
+            responsePayload.payload.fileName = responsePayload.downloadFile;
+
+            res.appianLog?.logInfo({
+              methodName: req.route.path,
+              moduleName: res.appianModule,
+              message: "ok",
+              payload: {
+                success: responsePayload.payload,
+                httpStatus: StatusCodes.OK
+              }
+            })
+
+            res.download(responsePayload.downloadFile);
+
+          } else {
+
+            httpSuccess({
+              httpRequest: req,
+              httpResponse: res,
+              log: res.appianLog,
+              success: new ApiSuccess({
+                module: res.appianModule,
+                payload: responsePayload.payload,
+                logPayload: responsePayload.logPayload,
+                fileName: responsePayload.fileName
+              }),
+              fileName: responsePayload.fileName,
+              standardResponse: standardResponse
+            })
+
+          }
 
         },
 
