@@ -629,6 +629,10 @@ export function processResponse({
           // send the response.
           if (responsePayload.downloadFile) {
 
+            // Add a payload if not present
+            responsePayload.payload = responsePayload.payload ?
+              responsePayload.payload : {};
+
             // Add to the payload the file name to download
             responsePayload.payload.fileName = responsePayload.downloadFile;
 
