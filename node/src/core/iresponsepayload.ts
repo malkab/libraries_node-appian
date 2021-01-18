@@ -30,4 +30,11 @@ export interface IResponsePayload {
    *
    */
   downloadFile?: string;
+  /**
+   *
+   * To be used with downloadFile, this parameters changes the name of the file
+   * to be downloaded. Will default to downloadFile itself if not present.
+   *
+   */
+  downloadName?: string;
 }

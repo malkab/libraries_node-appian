@@ -642,7 +642,8 @@ export function processResponse({
               }
             })
 
-            res.download(responsePayload.downloadFile);
+            res.download(responsePayload.downloadFile,
+              <string>responsePayload.downloadName);
 
           } else {
 

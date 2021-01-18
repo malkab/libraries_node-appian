@@ -441,7 +441,8 @@ export class TestRouter extends ApiRouter {
             // This is a successfull response
             return <IResponsePayload>{
               payload: { anyOtherPayload: 99 },
-              downloadFile: downFile
+              downloadFile: downFile,
+              downloadName: "a_new_name.jpg"
             };
 
           })
