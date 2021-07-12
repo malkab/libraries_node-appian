@@ -8,5 +8,6 @@ export interface IStatic {
 
   urlBaseRoot: string;
   localPath: string;
+  options?: any;
 
 }

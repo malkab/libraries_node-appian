@@ -269,7 +269,7 @@ export class HttpServer {
 
       this._app.use(
         x.urlBaseRoot,
-        express.static(x.localPath)
+        express.static(x.localPath, x.options),
       );
 
     });

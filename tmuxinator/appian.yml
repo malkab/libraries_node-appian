@@ -1,5 +1,5 @@
 name: appian
-root: /home/git/malkab-libraries-node/appian
+root: /home/git/libraries_node/libraries_node-appian
 
 windows:
 
@@ -14,6 +14,6 @@ windows:
   - compose: >
       clear ;
       sleep 0.5 ;
-      . mlkcontext common ;
+      . mlkctxt common ;
       cd docker ;
       ./010-compose-up.sh ;

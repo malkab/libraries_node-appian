@@ -119,7 +119,8 @@ new HttpServer({
   statics: [
     {
       localPath: "/test_data",
-      urlBaseRoot: "/test_data"
+      urlBaseRoot: "/test_data",
+      options: { dotfiles: "allow" }
     }
   ],
 

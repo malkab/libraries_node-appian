@@ -1,23 +1,25 @@
 #!/bin/bash
 
+# Version 2021-06-13
+
 # -----------------------------------------------------------------
 #
-# Describe the purpose of the script here.
+# Fire up the supporting DB and Redis.
 #
 # -----------------------------------------------------------------
 #
 # Starts a Docker Compose.
 #
 # -----------------------------------------------------------------
-
-# Check mlk-context to check. If void, no check will be performed
-MATCH_MLKCONTEXT=common
-# Compose file, blank searches for local docker-compose file
-COMPOSE_FILE=./docker-compose.yaml
+# Check mlkctxt to check. If void, no check will be performed. If NOTNULL,
+# any activated context will do, but will fail if no context was activated.
+MATCH_MLKCTXT=common
+# Compose file, defaults to ".".
+COMPOSE_FILE=
 # Project name, can be blank. Take into account that the folder name
-# will be used, there can be name clashes
+# will be used, there can be name clashes. Defaults to empty.
 PROJECT_NAME=$MLKC_APP_NAME
-# Detach
+# Detach. Defaults to "true".
 DETACH=false
 
 
@@ -26,44 +28,25 @@ DETACH=false
 
 # ---
 
-# Check mlk-context
+# Check mlkctxt is present at the system
+if command -v mlkctxt &> /dev/null ; then
 
-if [ ! -z "${MATCH_MLKCONTEXT}" ] ; then
-
-  if [ ! "$(mlkcontext)" = "$MATCH_MLKCONTEXT" ] ; then
-
-    echo Please initialise context $MATCH_MLKCONTEXT
-
-    exit 1
-
-  fi
+  if ! mlkctxt -c $MATCH_MLKCTXT ; then exit 1 ; fi
 
 fi
 
-
+COMPOSE_FILE_F=
 if [ ! -z "${COMPOSE_FILE}" ] ; then
 
-  COMPOSE_FILE="-f ${COMPOSE_FILE}"
+  COMPOSE_FILE_F="-f ${COMPOSE_FILE}"
 
 fi
 
+PROJECT_NAME_F=
+if [ ! -z "${PROJECT_NAME}" ] ; then PROJECT_NAME_F="-p ${PROJECT_NAME}" ; fi
 
-if [ ! -z "${PROJECT_NAME}" ] ; then
+# Detach
+DETACH_F="-d"
+if [ "$DETACH" = false ] ; then DETACH= ; fi
 
-  PROJECT_NAME="-p ${PROJECT_NAME}"
-
-fi
-
-
-if [ "$DETACH" = true ] ; then
-
-  DETACH="-d"
-
-else
-
-  DETACH=
-
-fi
-
-
-eval  docker-compose $COMPOSE_FILE $PROJECT_NAME up $DETACH
+eval docker-compose $COMPOSE_FILE_F $PROJECT_NAME_F up $DETACH_F
