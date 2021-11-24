@@ -14,7 +14,7 @@
 # -----------------------------------------------------------------
 # Check mlkctxt to check. If void, no check will be performed. If NOTNULL,
 # any activated context will do, but will fail if no context was activated.
-MATCH_MLKCTXT=common
+MATCH_MLKCTXT=NOTNULL
 # User UID and GID in the UID:GID form. Defaults to 0:0. This uses the --user
 # Docker parameter in case an user is already defined at the image.
 USER=1000:1000
@@ -31,7 +31,7 @@ NODE_MEMORY=
 # The network to connect to. Remember that when attaching to the network of an
 # existing container (using container:name) the HOST is "localhost". Also the
 # host network can be connected using just "host".
-NETWORK=$MLKC_APP_NAME
+NETWORK=$(mlkp app_name)
 # Container identifier root. This is used for both the container name (adding an
 # UID to avoid clashing) and the container host name (without UID). Incompatible
 # with NETWORK container:name option. If blank, a Docker engine default name

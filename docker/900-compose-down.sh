@@ -21,7 +21,7 @@ TIMEOUT=0
 COMPOSE_FILE=./docker-compose.yaml
 # Project name, can be blank. Take into account that the folder name will be
 # used, there can be name clashes
-PROJECT_NAME=$MLKC_APP_NAME
+PROJECT_NAME=$(mlkp app_name)
 # Drop volumes
 REMOVE_VOLUMES=true
 

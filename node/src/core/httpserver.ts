@@ -130,6 +130,7 @@ export class HttpServer {
     port = 8080,
     urlLimit = "2mb",
     jsonMaxLength = "5mb",
+    timeout = 120000,
     routes,
     statics,
     requestLogFilePath = "/logs/httpaccess.csv"
@@ -137,6 +138,7 @@ export class HttpServer {
     port?: number;
     urlLimit?: string;
     jsonMaxLength?: string;
+    timeout?: number;
     routes?: ApiRouter[];
     statics?: IStatic[];
     requestLogFilePath?: string;
@@ -178,6 +180,8 @@ export class HttpServer {
     this._app.set("port", this._port);
     this.server = http.createServer(this._app);
     this.server.listen(this._port);
+    // Timeout
+    this.server.setTimeout(timeout);
     this.server.on("error", this._onError);
     this.server.on("listening", this._onListening);
 
@@ -190,13 +194,11 @@ export class HttpServer {
    */
   private _expressConfiguration() {
 
-    this._app.use(bodyParser
-      .urlencoded({ limit: this._urlLimit, extended: true })
-    );
+    // Defines the length of a JSON to be post
+    this._app.use(express.json({ limit: this._jsonMaxLength }));
 
-    this._app.use(bodyParser
-      .json({ limit: this._jsonMaxLength })
-    );
+    // Defines the length of an URL encoded parameter
+    this._app.use(express.urlencoded({ limit: this._urlLimit, extended: true }));
 
     //cors settings
     this._app.use(function(req: express.Request, res: express.Response, next: express.NextFunction) {

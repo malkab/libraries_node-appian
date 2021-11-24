@@ -7,7 +7,7 @@
 # -----------------------------------------------------------------
 #
 # Runs a cli session on a Redis.
-#  
+#
 # -----------------------------------------------------------------
 
 # Check mlk-context to check. If void, no check will be performed
@@ -17,7 +17,7 @@ MATCH_MLKCONTEXT=common
 # "localhost". Keep in mind that linking to a container and using the -p
 # option for debugging results in a conflict. Use an external network if
 # both features are needed
-NETWORK=$MLKC_APP_NAME
+NETWORK=$(mlkp app_name)
 # Redis host - REMEMBER: here do not use the redis:// protocol, use
 # directly the host name
 HOST=redis
@@ -29,7 +29,7 @@ PASS=redis
 CONTAINER_NAME=
 # Container host name
 CONTAINER_HOST_NAME=
-# Source folder to mount on /ext-src/. 
+# Source folder to mount on /ext-src/.
 # A local folder with $(pwd) or a system-wide volume
 SRC_FOLDER=$(pwd)
 # The version of Redis to run

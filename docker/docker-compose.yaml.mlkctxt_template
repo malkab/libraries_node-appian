@@ -3,11 +3,11 @@ version: '3.5'
 networks:
   appian:
     external: false
-    name: ${MLKC_APP_NAME}
+    name: [{app_name}]
 
 services:
   postgis:
-    image: malkab/postgis:${MLKC_POSTGIS_IMAGE}
+    image: malkab/postgis:[{postgis_image}]
     container_name: appian-postgis
     shm_size: '2gb'
 

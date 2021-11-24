@@ -16,7 +16,7 @@ MATCH_MLKCONTEXT=common
 # The network to connect to. Remember that when attaching to the network
 # of an existing container (using container:name) the HOST is
 # "localhost"
-NETWORK=$MLKC_APP_NAME
+NETWORK=$(mlkp app_name)
 # Null for an interactive psql session, use -f for launching files or -c
 # for commands. Files must be relative to the mount point SRC_FOLDER
 SCRIPT_NAME=
@@ -25,7 +25,7 @@ CONTAINER_NAME=
 # Container host name
 CONTAINER_HOST_NAME=
 # The version of Docker PG image to use
-POSTGIS_DOCKER_TAG=$MLKC_POSTGIS_IMAGE
+POSTGIS_DOCKER_TAG=$(mlkp postgis_image)
 # The host
 HOST=postgis
 # The port

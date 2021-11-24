@@ -1,0 +1,31 @@
+# Variable paths are converted into case-insensitive envvars, so don't rely on
+# case to differentiate variables or paths. Do not end variable paths with the
+# reserved words "default" or "NOTNULL".
+
+# WARNING! Don't use "-" in variable paths.
+
+# Use $[SYSTEM.a.b]$ to reference a path in the system context. Use $[a.b.c]$
+# to reference local variables.
+# Use ${command}$ to launch shell commands, like for example ${date}$. However,
+# this process executes in a blank environment.
+# References to another variable paths and commands can be safely mixed in a
+# variable.
+# Reference variables in .mlkctxt_template files with [{a.b.c}].
+
+# Refer to ENVVARS in scripts using paths without context with the mlkp command,
+# like in:
+#   mlkp a.b.c
+#   mlkp SYSTEM.a.b.c
+
+# The list of available context. The "system", "SYSTEM", "default", and
+# "NOTNULL" context names are reserved and can't be used. This section is
+# optional if there are no other contexts aside the default one. There is no
+# need to specify the default context anyway.
+contexts:
+  - appian_test
+
+app_name:
+  default: appian
+  appian_test: appian_test
+
+postgis_image: holistic_hornet

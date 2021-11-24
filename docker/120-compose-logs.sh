@@ -8,7 +8,7 @@
 #
 # Logs a Compose. Allows for an argument to pass as a grep
 # command parameter.
-#  
+#
 # -----------------------------------------------------------------
 
 # Check mlk-context to check. If void, no check will be performed
@@ -16,7 +16,7 @@ MATCH_MLKCONTEXT=common
 # Will grep lines to this term. If void, all lines will be shown
 GREP=$1
 # Project name
-PROJECT_NAME=$MLKC_APP_NAME
+PROJECT_NAME=$(mlkp app_name)
 # Follow
 FOLLOW=true
 # Timestamps
@@ -70,14 +70,14 @@ fi
 if [ ! -z "${PROJECT_NAME}" ] ; then
 
   PROJECT_NAME="-p ${PROJECT_NAME}"
-  
+
 fi
 
 
 if [ ! -z "${TAIL}" ] ; then
 
   TAIL="--tail ${TAIL}"
-  
+
 else
 
   TAIL=

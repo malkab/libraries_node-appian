@@ -13,12 +13,12 @@
 # -----------------------------------------------------------------
 # Check mlkctxt to check. If void, no check will be performed. If NOTNULL,
 # any activated context will do, but will fail if no context was activated.
-MATCH_MLKCTXT=common
+MATCH_MLKCTXT=NOTNULL
 # Compose file, defaults to ".".
 COMPOSE_FILE=
 # Project name, can be blank. Take into account that the folder name
 # will be used, there can be name clashes. Defaults to empty.
-PROJECT_NAME=$MLKC_APP_NAME
+PROJECT_NAME=$(mlkp app_name)
 # Detach. Defaults to "true".
 DETACH=false
 
