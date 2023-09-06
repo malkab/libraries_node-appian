@@ -1,6 +1,6 @@
 {
   "name": "@malkab/appian",
-  "version": "3.7.16",
+  "version": "3.7.19",
   "description": "A very opinionated, convenience wrapper around Express and other packages for API development.",
   "scope": "@malkab",
   "author": {
@@ -37,12 +37,8 @@
     "service:watch:mocha:server": "nodemon --ext js --watch ./build/mocha.js --exec 'mocha --timeout 20000 ./build/mocha.js || true'",
     "service:watch:main:server": "nodemon --inspect=0.0.0.0:9229 \"./build/main.js\" --watch \"./build/main.js\""
   },
-  "engines": {
-    "node": "^12.0.0"
-  },
   "devDependencies": {
-    "@malkab/node-logger": "^1.1.4",
-    "@malkab/rxpg": "^4.1.18",
+    "@malkab/rxpg": "^5.0.0",
     "@malkab/rxredis": "^2.3.3",
     "@types/body-parser": "^1.19.0",
     "@types/chai": "^4.2.14",
@@ -73,7 +69,8 @@
     "webpack-node-externals": "^2.5.2"
   },
   "dependencies": {
-    "@malkab/node-utils": "^1.5.19",
+    "@malkab/node-logger": "^1.1.4",
+    "@malkab/node-utils": "^1.6.0",
     "@malkab/ts-utils": "^4.1.10",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
@@ -82,7 +79,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.20",
     "morgan": "^1.10.0",
-    "multer": "^1.4.2",
+    "multer": "^1.4.5-lts.1",
     "winston": "^3.2.1"
   },
   "peerDependencies": {}
