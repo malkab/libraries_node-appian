@@ -2,7 +2,7 @@ import * as rx from "rxjs";
 
 import * as rxo from "rxjs/operators";
 
-import { OrmError } from "@malkab/ts-utils";
+import { OrmError } from "@sunntics/ts-utils";
 
 import { Request, Response, ApiError, IResponsePayload, ApiRouter, addMetadata, processResponse } from "../core/index";
 

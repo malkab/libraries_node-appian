@@ -8,7 +8,7 @@ import { StatusCodes } from "http-status-codes";
 
 import * as rx from "rxjs";
 
-import { NodeLogger } from "@malkab/node-logger";
+import { NodeLogger } from "@sunntics/node-logger";
 
 import * as rxo from "rxjs/operators";
 
@@ -16,7 +16,7 @@ import { Pg } from "./pg";
 
 import { Redis } from "./redis";
 
-import { QueryResult, RxPg } from "@malkab/rxpg";
+import { QueryResult, RxPg } from "@sunntics/rxpg";
 
 import { OrmTest } from "./ormtest";
 

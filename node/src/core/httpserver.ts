@@ -1,6 +1,6 @@
-import { NodeLogger } from '@malkab/node-logger';
+import { NodeLogger } from '@sunntics/node-logger';
 
-import { TsUtilsFormattedOutput } from "@malkab/ts-utils";
+import { TsUtilsFormattedOutput } from "@sunntics/ts-utils";
 
 import * as bodyParser from "body-parser";
 

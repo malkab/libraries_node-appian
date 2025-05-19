@@ -1,8 +1,8 @@
 import { HttpServer, JwtToken } from "../src/index";
 
-import { EnvVarsStorage } from "@malkab/node-utils";
+import { EnvVarsStorage } from "@sunntics/node-utils";
 
-import { NodeLogger } from "@malkab/node-logger";
+import { NodeLogger } from "@sunntics/node-logger";
 
 import { TestRouter } from "./testrouter";
 
@@ -10,7 +10,7 @@ import { Pg } from "./pg";
 
 import { Redis } from './redis';
 
-import { RxPg } from "@malkab/rxpg"
+import { RxPg } from "@sunntics/rxpg"
 
 /**
  *

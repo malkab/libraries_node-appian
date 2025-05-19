@@ -1,8 +1,8 @@
 {
-  "name": "@malkab/appian",
-  "version": "3.7.19",
+  "name": "@sunntics/appian",
+  "version": "3.7.20",
   "description": "A very opinionated, convenience wrapper around Express and other packages for API development.",
-  "scope": "@malkab",
+  "scope": "@sunntics",
   "author": {
     "name": "Juan Pedro Perez Alcantara",
     "email": "jp.perez.alcantara@gmail.com",
@@ -38,8 +38,8 @@
     "service:watch:main:server": "nodemon --inspect=0.0.0.0:9229 \"./build/main.js\" --watch \"./build/main.js\""
   },
   "devDependencies": {
-    "@malkab/rxpg": "^5.0.0",
-    "@malkab/rxredis": "^2.3.3",
+    "@sunntics/rxpg": "5.0.4",
+    "@sunntics/rxredis": "2.3.13",
     "@types/body-parser": "^1.19.0",
     "@types/chai": "^4.2.14",
     "@types/cookie-parser": "^1.4.2",
@@ -69,9 +69,9 @@
     "webpack-node-externals": "^2.5.2"
   },
   "dependencies": {
-    "@malkab/node-logger": "^1.1.4",
-    "@malkab/node-utils": "^1.6.0",
-    "@malkab/ts-utils": "^4.1.10",
+    "@sunntics/node-logger": "1.1.9",
+    "@sunntics/node-utils": "1.6.20",
+    "@sunntics/ts-utils": "4.1.18",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",

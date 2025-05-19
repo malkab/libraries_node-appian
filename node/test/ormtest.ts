@@ -1,4 +1,4 @@
-import { RxPg, PgOrm } from "@malkab/rxpg";
+import { RxPg, PgOrm } from "@sunntics/rxpg";
 
 import * as rx from "rxjs";
 

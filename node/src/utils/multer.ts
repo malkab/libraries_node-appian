@@ -2,7 +2,7 @@ import multer from "multer";
 
 import * as utilPath from "path";
 
-import { mkdirSync, genUid } from "@malkab/node-utils";
+import { mkdirSync, genUid } from "@sunntics/node-utils";
 
 /**
  *

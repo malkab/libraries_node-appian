@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { NodeLogger } from '@malkab/node-logger';
+import { NodeLogger } from '@sunntics/node-logger';
 
 /**
  *

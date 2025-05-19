@@ -6,7 +6,7 @@ import { ApiSuccess } from "./src/core/apisuccess";
 
 import { IResponsePayload } from "./src/core/iresponsepayload";
 
-import { NodeLogger } from "@malkab/node-logger";
+import { NodeLogger } from "@sunntics/node-logger";
 
 export {};
 

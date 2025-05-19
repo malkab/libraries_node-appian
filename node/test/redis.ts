@@ -1,25 +1,25 @@
-import { RxRedis } from "@malkab/rxredis";
+import { RxRedis } from "@sunntics/rxredis";
 
 import { Observable } from "rxjs";
 
 /**
- * 
+ *
  * A Redis persistence test. Use Redis commands only here.
- * 
+ *
  */
 export class Redis {
 
   /**
-   * 
+   *
    * The internal Redis instance.
-   * 
+   *
    */
   private _redis: RxRedis;
 
   /**
-   * 
-   * Constructor. 
-   * 
+   *
+   * Constructor.
+   *
    */
   constructor() {
 
@@ -30,9 +30,9 @@ export class Redis {
   }
 
   /**
-   * 
+   *
    * Set test.
-   * 
+   *
    */
   public set$(key: string, value: any): Observable<string> {
 

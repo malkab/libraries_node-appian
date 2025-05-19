@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { ApiSuccess } from "../core/apisuccess";
 
-import { NodeLogger } from "@malkab/node-logger";
+import { NodeLogger } from "@sunntics/node-logger";
 
 import { JwtToken } from "./jwttoken";
 

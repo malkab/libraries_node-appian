@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { RxPg, QueryResult } from '@malkab/rxpg';
+import { RxPg, QueryResult } from '@sunntics/rxpg';
 
 /**
  *
