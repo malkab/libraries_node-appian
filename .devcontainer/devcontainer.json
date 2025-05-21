@@ -1,0 +1,42 @@
+{
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "typescript",
+    "workspaceFolder": "${localWorkspaceFolder}",
+    "name": "appian_typescript",
+    "features": {},
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "arcanis.vscode-zipfs",
+                "dbaeumer.vscode-eslint",
+                "GitHub.copilot-chat",
+                "GitHub.copilot",
+                "mhutchie.git-graph",
+                "redhat.vscode-yaml",
+                "stkb.rewrap"
+            ],
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash"
+            }
+        }
+    },
+    "remoteUser": "node",
+    "containerEnv": {
+        "PATH": "${localEnv:PATH}:/home/node/.local/bin:/usr/local/bin"
+    },
+    "mounts": [
+        "type=bind,source=${localWorkspaceFolder},target=${localWorkspaceFolder}"
+        // Ejemplos, pero utilizar preferentemente los volúmenes
+        // en el Docker Compose.
+        // "type=bind,source=${localWorkspaceFolder}/configs/config.yaml,target=/config.yaml,readonly",
+        // "type=bind,source=${localWorkspaceFolder}/000_docker_volumes/ssparc,target=/ssparc"
+    ]
+    // Éste es un buen lugar para cambiar los permisos y dueños
+    // de los volúmenes montados.
+    // "postCreateCommand": "sudo chown -R node:node /ssparc",
+    // Ejemplo de cómo ejecutar un script después de crear el
+    // contenedor.
+    // "postCreateCommand": "./.devcontainer/assets/postcreatecommand.sh"
+    // Éste se ejecuta después del build.
+    // "initializeCommand": "echo POST_INIT"
+}

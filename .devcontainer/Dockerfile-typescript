@@ -1,0 +1,14 @@
+FROM typescript:1.1.8-devcontainer
+
+LABEL author="Juan Pedro Perez"
+LABEL email="jp.perez.alcantara@gmail.com"
+
+WORKDIR /
+
+USER root
+
+# Personalizaciones como root
+
+USER node
+
+# Personalizaciones como node

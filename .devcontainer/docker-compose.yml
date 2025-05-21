@@ -1,0 +1,22 @@
+services:
+  # -------------------
+  #
+  # DevContainer TypeScript.
+  #
+  # -------------------
+  typescript:
+    build:
+      context: .
+      dockerfile: Dockerfile-typescript
+    image: appian_typescript
+    container_name: appian_typescript
+    command: sleep infinity
+
+    volumes:
+      # El .npmrc del host.
+      - /home/malkab/.npmrc:/home/node/.npmrc:ro
+      # gitconfig del host.
+      - /home/malkab/.gitconfig:/home/node/.gitconfig:ro
+      # Por si hay material DVC implicado, para que funcionen los
+      # symlinks.
+      # - /home/malkab/sync_small/dvc/:/home/malkab/sync_small/dvc/
