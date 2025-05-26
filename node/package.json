@@ -1,6 +1,6 @@
 {
   "name": "@sunntics/appian",
-  "version": "3.7.24",
+  "version": "3.7.25",
   "description": "A very opinionated, convenience wrapper around Express and other packages for API development.",
   "scope": "@sunntics",
   "author": {
@@ -65,7 +65,7 @@
   },
   "dependencies": {
     "@sunntics/node-logger": "1.1.12",
-    "@sunntics/node-utils": "1.6.52",
+    "@sunntics/node-utils": "1.6.53",
     "@sunntics/rxpg": "5.0.9",
     "@sunntics/rxredis": "2.3.18",
     "@sunntics/ts-utils": "8.0.12",
