@@ -1,6 +1,6 @@
 {
   "name": "@sunntics/appian",
-  "version": "3.7.22",
+  "version": "3.7.23",
   "description": "A very opinionated, convenience wrapper around Express and other packages for API development.",
   "scope": "@sunntics",
   "author": {
@@ -25,7 +25,6 @@
     "build-prod": "yarn clean ; NODE_ENV=production yarn build",
     "build": "yarn clean ; npm run service:build-lib",
     "clean": "rm -Rf build ; rm -Rf dist",
-    "install_peer_dep": "npm install --no-save rxjs@7.8.1 @sunntics/ts-utils@8.0.10 @sunntics/node-logger@1.1.11 @sunntics/node-utils@1.6.49 @sunntics/rxpg@5.0.7 @sunntics/rxredis@2.3.16",
     "mocha": "npm-run-all --parallel service:watch:mocha:server service:build-tests",
     "publish-prod": "yarn publish --patch --no-git-tag-version",
     "quick-test": "npm-run-all --parallel service:watch:quick-test:server service:build",
@@ -65,6 +64,11 @@
     "webpack-node-externals": "3.0.0"
   },
   "dependencies": {
+    "@sunntics/node-logger": "1.1.12",
+    "@sunntics/node-utils": "1.6.51",
+    "@sunntics/rxpg": "5.0.8",
+    "@sunntics/rxredis": "2.3.17",
+    "@sunntics/ts-utils": "8.0.11",
     "cookie-parser": "1.4.7",
     "cors": "2.8.5",
     "express": "4.21.2",
@@ -74,13 +78,6 @@
     "morgan": "1.10.0",
     "multer": "1.4.5-lts.2",
     "winston": "3.10.0"
-  },
-  "peerDependencies": {
-    "@sunntics/node-logger": "1.1.11",
-    "@sunntics/node-utils": "1.6.49",
-    "@sunntics/rxpg": "5.0.7",
-    "@sunntics/rxredis": "2.3.16",
-    "@sunntics/ts-utils": "8.0.10"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
