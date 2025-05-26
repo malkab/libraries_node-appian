@@ -1,6 +1,6 @@
 {
   "name": "@sunntics/appian",
-  "version": "3.7.23",
+  "version": "3.7.24",
   "description": "A very opinionated, convenience wrapper around Express and other packages for API development.",
   "scope": "@sunntics",
   "author": {
@@ -65,10 +65,10 @@
   },
   "dependencies": {
     "@sunntics/node-logger": "1.1.12",
-    "@sunntics/node-utils": "1.6.51",
-    "@sunntics/rxpg": "5.0.8",
-    "@sunntics/rxredis": "2.3.17",
-    "@sunntics/ts-utils": "8.0.11",
+    "@sunntics/node-utils": "1.6.52",
+    "@sunntics/rxpg": "5.0.9",
+    "@sunntics/rxredis": "2.3.18",
+    "@sunntics/ts-utils": "8.0.12",
     "cookie-parser": "1.4.7",
     "cors": "2.8.5",
     "express": "4.21.2",

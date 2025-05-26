@@ -1,8 +1,6 @@
 import { NodeLogger } from '@sunntics/node-logger';
 
-import { formattedoutput as fo } from "@sunntics/ts-utils";
-
-import * as bodyParser from "body-parser";
+import { FormattedOutput } from "@sunntics/ts-utils";
 
 import * as cookieParser from "cookie-parser";
 
@@ -88,7 +86,7 @@ export class HttpServer {
    * Output formatter.
    *
    */
-  private _fo: fo.FormattedOutput;
+  private _fo: FormattedOutput;
 
   /**
    *
@@ -148,7 +146,7 @@ export class HttpServer {
     this._requestLogFilePath = requestLogFilePath;
 
     // The output formatter
-    this._fo = new fo.FormattedOutput({});
+    this._fo = new FormattedOutput({});
 
     // The port
     this._port = port;
